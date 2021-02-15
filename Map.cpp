@@ -31,16 +31,19 @@ Country::Country(string country_Name, string continent_Name, vector<Country*> ne
 // Copy constructor
 Country::Country(const Country& copy) {
 
-	name = copy.name;
-	continentName = copy.continentName;
-	armie = copy.armie;
+	string* copyName = new string(copy.name);
+	name = *copyName;
+	string* copyContinent = new string(copy.continentName);
+	continentName = *copyContinent;
+	int* copyArmy = new int(copy.armie);
+	armie = *copyArmy;
 	for (auto temp : copy.neighbors) {
 		this->neighbors.push_back(new Country(*temp));
 	}
 
 }
 
-/*
+
 Country::~Country(){
 
 	for (auto& p : neighbors)
@@ -49,9 +52,9 @@ Country::~Country(){
 		p = NULL;
 	}
 	neighbors.clear();
-
+	
 }
-*/
+
 
 Country& Country::operator=(const Country& copy)
 {
@@ -103,7 +106,7 @@ bool Country::hasNeighbors()
 // Adds neighbors to country
 void Country::addNeighbor(Country* country)
 {
-	neighbors.push_back(country);
+	neighbors.push_back(new Country(*country));
 }
 
 // Adds a vector of neighbors to country
@@ -216,7 +219,7 @@ vector<Country*> Continent::getContinentCountries()
 // Adds a country to continent 
 void Continent::addCountrytoContinent(Country* country)
 {
-	continentCountries.push_back(country);
+	continentCountries.push_back(new Country(*country));
 }
 
 // Returns the number of countries
