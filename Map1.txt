@@ -1,0 +1,34 @@
+Central America{
+Nicaragua
+Costa Rica
+Panama
+}
+
+South America{
+Colombia
+Venezuela
+Brazil
+}
+
+Nicaragua[
+Costa Rica
+]
+
+Costa Rica[
+Nicaragua
+Panama
+]
+
+Panama[
+Costa Rica
+Colombia
+]
+
+Colombia[
+Panama
+Venezuela
+]
+
+Venezuela[
+Colombia
+]
