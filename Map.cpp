@@ -31,8 +31,11 @@ Country::Country(string country_Name, string continent_Name, vector<Country*> ne
 // Copy constructor
 Country::Country(const Country& copy) {
 
+	//string* copyName = new string(copy.name);
 	name = copy.name;
+	//string* copyContinent = new string(copy.continentName);
 	continentName = copy.continentName;
+	//int* copyArmy = new int(copy.armie);
 	armie = copy.armie;
 	for (auto temp : copy.neighbors) {
 		this->neighbors.push_back(new Country(*temp));
@@ -40,7 +43,7 @@ Country::Country(const Country& copy) {
 
 }
 
-/*
+
 Country::~Country(){
 
 	for (auto& p : neighbors)
@@ -49,9 +52,9 @@ Country::~Country(){
 		p = NULL;
 	}
 	neighbors.clear();
-
+	
 }
-*/
+
 
 Country& Country::operator=(const Country& copy)
 {

@@ -12,13 +12,17 @@ using namespace std;
 class MapLoader {
 
 public:
-	MapLoader() = default;
+	MapLoader();
 	MapLoader(string path);
+	~MapLoader();
 
 	string getPath(MapLoader maploader);
-	Map* load();
+	Map getMap();
+	void load(string path);
 private:
 	string fpath;
 	Map* map;
-	void readFile(string name);
+	bool valid;
+	bool readFile(string name);
+	bool validFile(string path);
 };

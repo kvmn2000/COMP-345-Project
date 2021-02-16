@@ -20,7 +20,7 @@ public:
 	Country(string country_Name, string continent_Name);
 	Country(string country_Name, string continent_Name, vector<Country*> neighbor_countries, int playerArmie);
 	Country(const Country& copy);
-	//~Country();
+	~Country();
 
 	Country& operator=(const Country& copy);
 	friend ostream& operator << (ostream& out, const Country& copy);
