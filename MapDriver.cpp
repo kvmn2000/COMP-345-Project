@@ -44,41 +44,42 @@ int main(int argc, const char* argv[]) {
     europe->addCountrytoContinent(france);
 
 
-    Map gameMap;
 
-    gameMap.addContinent(centralAmerica);
-    gameMap.addContinent(southAmerica);
+    Map*gameMap = new Map();
+
+    gameMap->addContinent(centralAmerica);
+    gameMap->addContinent(southAmerica);
 
 
     vector<Country*> nicNeighbors;
     nicNeighbors.push_back(costaRica);
     nicaragua->setNeighbors(nicNeighbors);
-    gameMap.addCountry(nicaragua);
+    gameMap->addCountry(nicaragua);
 
 
     vector<Country*> costaNeighbors;
     costaNeighbors.push_back(nicaragua);
     costaNeighbors.push_back(panama);
     costaRica->setNeighbors(costaNeighbors);
-    gameMap.addCountry(costaRica);
+    gameMap->addCountry(costaRica);
 
     vector<Country*> panamaNeighbors;
     panamaNeighbors.push_back(costaRica);
     panamaNeighbors.push_back(colombia);
     panama->setNeighbors(panamaNeighbors);
-    gameMap.addCountry(panama);
+    gameMap->addCountry(panama);
 
     vector<Country*> colNeighbors;
     colNeighbors.push_back(panama);
     colNeighbors.push_back(venezuela);
     colombia->setNeighbors(colNeighbors);
-    gameMap.addCountry(colombia);
+    gameMap->addCountry(colombia);
 
 
     vector<Country*> venNeighbors;
     venNeighbors.push_back(colombia);
     venezuela->setNeighbors(venNeighbors);
-    gameMap.addCountry(venezuela);
+    gameMap->addCountry(venezuela);
 
 
 
@@ -86,11 +87,11 @@ int main(int argc, const char* argv[]) {
 
     cout << "---------- Created Map -----------" << endl;
 
-    cout << "Created " << gameMap.countryCount() << " countries" << endl;
-    cout << "Created " << gameMap.continentCount() << " continent" << endl << endl;
+    cout << "Created " << gameMap->countryCount() << " countries" << endl;
+    cout << "Created " << gameMap->continentCount() << " continent" << endl << endl;
 
-    vector<Country*> countrylist = gameMap.getCountries();
-    vector<Continent*> continentlist = gameMap.getContinents();
+    vector<Country*> countrylist = gameMap->getCountries();
+    vector<Continent*> continentlist = gameMap->getContinents();
 
 
     for (auto& temp : continentlist) {
@@ -121,7 +122,7 @@ int main(int argc, const char* argv[]) {
 
     cout  << endl;
 
-    if (gameMap.toValidate() == true) {
+    if (gameMap->toValidate() == true) {
         cout << "The Map is valid" << endl;
     }
     else {
@@ -138,11 +139,13 @@ int main(int argc, const char* argv[]) {
     braNeighbors.push_back(colombia);
     brazil->setNeighbors(braNeighbors);
 
-    gameMap.addCountry(brazil);
+    gameMap->addCountry(brazil);
 
-    cout << "Created " << gameMap.countryCount() << " countries" << endl;
-    cout << "Created " << gameMap.continentCount() << " continent" << endl << endl;
+    cout << "Created " << gameMap->countryCount() << " countries" << endl;
+    cout << "Created " << gameMap->continentCount() << " continent" << endl << endl;
 
+    countrylist = gameMap->getCountries();
+    continentlist = gameMap->getContinents();
 
     for (auto& temp : continentlist) {
 
@@ -172,7 +175,7 @@ int main(int argc, const char* argv[]) {
 
     cout << endl;
 
-    if (gameMap.toValidate() == true) {
+    if (gameMap->toValidate() == true) {
         cout << "The Map is valid" << endl;
     }
     else {
@@ -187,10 +190,11 @@ int main(int argc, const char* argv[]) {
 
    colombia->addNeighbor(brazil);
 
-    cout << "Created " << gameMap.countryCount() << " countries" << endl;
-    cout << "Created " << gameMap.continentCount() << " continent" << endl << endl;
+    cout << "Created " << gameMap->countryCount() << " countries" << endl;
+    cout << "Created " << gameMap->continentCount() << " continent" << endl << endl;
 
-    countrylist = gameMap.getCountries();
+    countrylist = gameMap->getCountries();
+    continentlist = gameMap->getContinents();
 
     for (auto& temp : continentlist) {
 
@@ -220,7 +224,7 @@ int main(int argc, const char* argv[]) {
 
     cout << endl;
 
-    if (gameMap.toValidate() == true) {
+    if (gameMap->toValidate() == true) {
         cout << "The Map is valid" << endl;
     }
     else {
@@ -233,14 +237,15 @@ int main(int argc, const char* argv[]) {
     cout << "---------- Created Map -----------" << endl;
     cout << "Adding 1 unconnected country..." << endl << endl;
 
-    gameMap.addContinent(europe);
-    gameMap.addCountry(france);
+    gameMap->addContinent(europe);
+    gameMap->addCountry(france);
 
 
-    cout << "Created " << gameMap.countryCount() << " countries" << endl;
-    cout << "Created " << gameMap.continentCount() << " continent" << endl << endl;
+    cout << "Created " << gameMap->countryCount() << " countries" << endl;
+    cout << "Created " << gameMap->continentCount() << " continent" << endl << endl;
 
-    countrylist = gameMap.getCountries();
+    countrylist = gameMap->getCountries();
+    continentlist = gameMap->getContinents();
 
 
     for (auto& temp : continentlist) {
@@ -271,7 +276,7 @@ int main(int argc, const char* argv[]) {
 
     cout << endl;
 
-    if (gameMap.toValidate() == true) {
+    if (gameMap->toValidate() == true) {
         cout << "The Map is valid" << endl;
     }
     else {
@@ -282,6 +287,9 @@ int main(int argc, const char* argv[]) {
 
 
     cout << "---------- FINISH TESTING MAP -----------" << endl << endl;
+
+   
+    cout << endl;
 
     return 0;
 }

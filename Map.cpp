@@ -31,11 +31,8 @@ Country::Country(string country_Name, string continent_Name, vector<Country*> ne
 // Copy constructor
 Country::Country(const Country& copy) {
 
-	//string* copyName = new string(copy.name);
 	name = copy.name;
-	//string* copyContinent = new string(copy.continentName);
 	continentName = copy.continentName;
-	//int* copyArmy = new int(copy.armie);
 	armie = copy.armie;
 	for (auto temp : copy.neighbors) {
 		this->neighbors.push_back(new Country(*temp));
@@ -43,18 +40,14 @@ Country::Country(const Country& copy) {
 
 }
 
-
+// Destructor
 Country::~Country(){
 
-	for (auto& p : neighbors)
-	{
-		delete p;
-		p = NULL;
-	}
+	cout << "Deleting Country:" << endl;
+	neighbors.erase(neighbors.begin(), neighbors.end());
 	neighbors.clear();
 	
 }
-
 
 Country& Country::operator=(const Country& copy)
 {
@@ -175,12 +168,11 @@ Continent::Continent(const  Continent& copy) {
 // Continent deconstructor
 Continent::~Continent()
 {
-	for (auto p : continentCountries)
-	{
-		delete p;
-		p = NULL;
-	}
+	cout << "Deleting Continent:" << endl;
+	continentCountries.erase(continentCountries.begin(), continentCountries.end());
+
 	continentCountries.clear();
+
 }
 
 Continent& Continent::operator=(const Continent& copy)
@@ -251,29 +243,34 @@ bool Continent::checkForCountry(string countryName)
 // Map Destructor
 Map::~Map()
 {
-	for (map<string, Country*>::iterator i = countries.begin(); i != countries.end(); ++i) {
+	cout << "---------- DELETING MAP -----------" << endl << endl;
 
-		delete i->second;
-		i->second = NULL;
+	for (map<string, Country*>::iterator itr = countries.begin(); itr != countries.end(); itr++)
+	{
+		delete(itr->second);
+
 	}
+	countries.clear();
 
-	for (map<string, Continent*>::iterator j = continents.begin(); j != continents.end(); ++j) {
 
-		delete j->second;
-		j->second = NULL;
+	for (map<string, Continent*>::iterator itr = continents.begin(); itr != continents.end(); itr++)
+	{
+		delete (itr->second);	
 	}
+	continents.clear();
+
 }
 
 // Map Copy Constructor
 Map::Map(const Map& copy) {
 
 	/*
-	for (map<string, Country*>::iterator i = countries.begin(); i != countries.end(); i++) {
-		countries.push_back(new Country(*countries[i]));
+	for (map<string, std::shared_ptr<Country>>::iterator i = copy.countries.begin(); i != copy.countries.end(); i++) {
+	
 	}
 
 	for (map<string, Continent*>::iterator i = continents.begin(); i != continents.end(); i++) {
-		continents.push_back(new Continent(*i));
+		continents.push_back(new Continent(i));
 	}
 	*/
 }
