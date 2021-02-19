@@ -9,6 +9,7 @@ Country::Country(string country_Name)
 {
 	name = country_Name;
 	armie = 0;
+	owner = NULL;
 }
 
 // Country constructor with name and continent as arguments
@@ -17,6 +18,7 @@ Country::Country(string country_Name, string continent_Name)
 	name = country_Name;
 	continentName = continent_Name;
 	armie = 0;
+	owner = NULL;
 }
 
 // Country constructor with name, continent, neighbors and armie as arguments
@@ -26,6 +28,7 @@ Country::Country(string country_Name, string continent_Name, vector<Country*> ne
 	continentName = continent_Name;
 	neighbors = neighbor_countries;
 	armie = playerArmie;
+	owner = NULL;
 }
 
 // Copy constructor
@@ -34,6 +37,8 @@ Country::Country(const Country& copy) {
 	name = copy.name;
 	continentName = copy.continentName;
 	armie = copy.armie;
+	owner = copy.owner;
+
 	for (auto temp : copy.neighbors) {
 		this->neighbors.push_back(new Country(*temp));
 	}
@@ -46,6 +51,8 @@ Country::~Country(){
 	cout << "Deleting Country:" << endl;
 	neighbors.erase(neighbors.begin(), neighbors.end());
 	neighbors.clear();
+	owner = NULL;
+	delete owner;
 	
 }
 
@@ -78,6 +85,14 @@ string Country::getName()
 string Country::getContinentName()
 {
 	return continentName;
+}
+
+void Country::setOwner(Player* countryOwner) {
+	owner = countryOwner;
+}
+
+Player* Country::getOwner() {
+	return owner;
 }
 
 // Sets the amount of army

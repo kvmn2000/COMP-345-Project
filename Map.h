@@ -1,5 +1,7 @@
 #pragma once
 
+//#include "Player.h"
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -9,6 +11,7 @@
 
 using namespace std;
 
+class Player;
 
 class Country {
 
@@ -28,6 +31,8 @@ public:
 
 	string getName();
 	string getContinentName();
+	void setOwner(Player* countryOwner);
+	Player* getOwner();
 	void setArmy(int amount);
 	int getArmy();
 	
@@ -42,6 +47,7 @@ public:
 private:
 	string name;
 	string continentName;
+	Player* owner;
 	int armie;
 	vector<Country*> neighbors;
 };
