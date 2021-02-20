@@ -9,6 +9,7 @@ Country::Country(string country_Name)
 {
 	name = country_Name;
 	armie = 0;
+	owner = NULL;
 }
 
 // Country constructor with name and continent as arguments
@@ -17,6 +18,7 @@ Country::Country(string country_Name, string continent_Name)
 	name = country_Name;
 	continentName = continent_Name;
 	armie = 0;
+	owner = NULL;
 }
 
 // Country constructor with name, continent, neighbors and armie as arguments
@@ -26,24 +28,24 @@ Country::Country(string country_Name, string continent_Name, vector<Country*> ne
 	continentName = continent_Name;
 	neighbors = neighbor_countries;
 	armie = playerArmie;
+	owner = NULL;
 }
 
 // Copy constructor
 Country::Country(const Country& copy) {
 
-	//string* copyName = new string(copy.name);
 	name = copy.name;
-	//string* copyContinent = new string(copy.continentName);
 	continentName = copy.continentName;
-	//int* copyArmy = new int(copy.armie);
 	armie = copy.armie;
+	owner = copy.owner;
+
 	for (auto temp : copy.neighbors) {
 		this->neighbors.push_back(new Country(*temp));
 	}
 
 }
 
-
+// Destructor
 Country::~Country(){
 
 	for (auto& p : neighbors)
@@ -52,9 +54,11 @@ Country::~Country(){
 		p = NULL;
 	}
 	neighbors.clear();
+
+	owner = NULL;
+	delete owner;
 	
 }
-
 
 Country& Country::operator=(const Country& copy)
 {
@@ -85,6 +89,14 @@ string Country::getName()
 string Country::getContinentName()
 {
 	return continentName;
+}
+
+void Country::setOwner(Player* countryOwner) {
+	owner = countryOwner;
+}
+
+Player* Country::getOwner() {
+	return owner;
 }
 
 // Sets the amount of army
@@ -181,6 +193,7 @@ Continent::~Continent()
 		continentCountries.pop_back();
 	}
 	continentCountries.clear();
+
 }
 
 Continent& Continent::operator=(const Continent& copy)
@@ -251,6 +264,8 @@ bool Continent::checkForCountry(string countryName)
 // Map Destructor
 Map::~Map()
 {
+	cout << "---------- DELETING MAP -----------" << endl << endl;
+
 	for (map<string, Continent*>::iterator j = continents.begin(); j != continents.end(); ++j) {
 
 		delete j->second;
@@ -259,18 +274,19 @@ Map::~Map()
 	for (map<string, Country*>::iterator i = countries.begin(); i != countries.end(); ++i) {
 		i->second = NULL;
 	}
+
 }
 
 // Map Copy Constructor
 Map::Map(const Map& copy) {
 
 	/*
-	for (map<string, Country*>::iterator i = countries.begin(); i != countries.end(); i++) {
-		countries.push_back(new Country(*countries[i]));
+	for (map<string, std::shared_ptr<Country>>::iterator i = copy.countries.begin(); i != copy.countries.end(); i++) {
+	
 	}
 
 	for (map<string, Continent*>::iterator i = continents.begin(); i != continents.end(); i++) {
-		continents.push_back(new Continent(*i));
+		continents.push_back(new Continent(i));
 	}
 	*/
 }
@@ -386,7 +402,7 @@ bool Map::toValidate()
 			
 			string temp2 = allCountries[j]->getName();
 			
-			if (!reachable(temp1, temp2)) {
+			if (!toGetTo(temp1, temp2)) {
 				
 				cout << "This is not a connected graph." << endl;
 				
@@ -442,7 +458,7 @@ bool Map::toValidate()
 }
 
 // Check if a initial country can reach a destinatation country
-bool Map::reachable(string initial, string destination)
+bool Map::toGetTo(string initial, string destination)
 {
 
 	if (initial == destination){
