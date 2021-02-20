@@ -92,7 +92,6 @@ public:
 	
 	Map& operator=(const Map& copy);
 	friend ostream& operator << (ostream& out, const Map& copy);
-	friend istream& operator >> (istream& in, Map& copy);
 	
 	int countryCount();
 	int continentCount();
