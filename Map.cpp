@@ -68,7 +68,7 @@ Country& Country::operator=(const Country& copy)
 
 ostream& operator<<(ostream& out, const Country& copy)
 {
-	out << copy.name;
+	out << "Country name: " << copy.name << endl;
 	return out;
 }
 
@@ -204,8 +204,7 @@ Continent& Continent::operator=(const Continent& copy)
 
 ostream& operator<<(ostream& out, const Continent& copy)
 {
-	out << "Continent name: " << copy.name <<  endl;
-	
+	out << "Continent name: " << copy.name << endl;
 	return out;
 }
 
@@ -291,15 +290,10 @@ Map& Map::operator=(const Map& copy)
 
 ostream& operator<<(ostream& out, const Map& copy)
 {
-
+	out << "There are " << copy.continents.size() << "continents and " << copy.countries.size() << "countries" << endl;
 	return out;
 }
 
-istream& operator>>(istream& in, Map& copy)
-{
-
-	return in;
-}
 
 // Returns the amount of countries
 int Map::countryCount()
@@ -413,13 +407,13 @@ bool Map::toValidate()
 	for (map<string, Continent*>::iterator i = continents.begin(); i != continents.end(); i++) {
 		
 		if (i->second->numberOfCountry() == 0) {
-			cout << "Continents are not connected subgraphs." << endl;
+			cout << "Continents are not a connected subgraphs." << endl;
 			return false;
 		}
 
 	}
 
-	std::cout << "Continents are connected subgraphs." << std::endl;
+	std::cout << "Continents are a connected subgraphs." << std::endl;
 
 	// verify all countries should belong to at least one continent
 	for (int i = 0; i < getCountries().size(); i++)
