@@ -280,15 +280,8 @@ Map::~Map()
 // Map Copy Constructor
 Map::Map(const Map& copy) {
 
-	/*
-	for (map<string, std::shared_ptr<Country>>::iterator i = copy.countries.begin(); i != copy.countries.end(); i++) {
-	
-	}
-
-	for (map<string, Continent*>::iterator i = continents.begin(); i != continents.end(); i++) {
-		continents.push_back(new Continent(i));
-	}
-	*/
+	countries = copy.countries;
+	continents = copy.continents;
 }
 
 Map& Map::operator=(const Map& copy)
