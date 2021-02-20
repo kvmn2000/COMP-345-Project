@@ -9,7 +9,6 @@ Country::Country(string country_Name)
 {
 	name = country_Name;
 	armie = 0;
-	owner = NULL;
 }
 
 // Country constructor with name and continent as arguments
@@ -18,7 +17,6 @@ Country::Country(string country_Name, string continent_Name)
 	name = country_Name;
 	continentName = continent_Name;
 	armie = 0;
-	owner = NULL;
 }
 
 // Country constructor with name, continent, neighbors and armie as arguments
@@ -28,33 +26,35 @@ Country::Country(string country_Name, string continent_Name, vector<Country*> ne
 	continentName = continent_Name;
 	neighbors = neighbor_countries;
 	armie = playerArmie;
-	owner = NULL;
 }
 
 // Copy constructor
 Country::Country(const Country& copy) {
 
+	//string* copyName = new string(copy.name);
 	name = copy.name;
+	//string* copyContinent = new string(copy.continentName);
 	continentName = copy.continentName;
+	//int* copyArmy = new int(copy.armie);
 	armie = copy.armie;
-	owner = copy.owner;
-
 	for (auto temp : copy.neighbors) {
 		this->neighbors.push_back(new Country(*temp));
 	}
 
 }
 
-// Destructor
+
 Country::~Country(){
 
-	cout << "Deleting Country:" << endl;
-	neighbors.erase(neighbors.begin(), neighbors.end());
+	for (auto& p : neighbors)
+	{
+		delete p;
+		p = NULL;
+	}
 	neighbors.clear();
-	owner = NULL;
-	delete owner;
 	
 }
+
 
 Country& Country::operator=(const Country& copy)
 {
@@ -85,14 +85,6 @@ string Country::getName()
 string Country::getContinentName()
 {
 	return continentName;
-}
-
-void Country::setOwner(Player* countryOwner) {
-	owner = countryOwner;
-}
-
-Player* Country::getOwner() {
-	return owner;
 }
 
 // Sets the amount of army
@@ -183,11 +175,12 @@ Continent::Continent(const  Continent& copy) {
 // Continent deconstructor
 Continent::~Continent()
 {
-	cout << "Deleting Continent:" << endl;
-	continentCountries.erase(continentCountries.begin(), continentCountries.end());
-
+	while (!continentCountries.empty()) {
+		delete continentCountries.back();
+		continentCountries.back() = nullptr;
+		continentCountries.pop_back();
+	}
 	continentCountries.clear();
-
 }
 
 Continent& Continent::operator=(const Continent& copy)
@@ -258,34 +251,26 @@ bool Continent::checkForCountry(string countryName)
 // Map Destructor
 Map::~Map()
 {
-	cout << "---------- DELETING MAP -----------" << endl << endl;
+	for (map<string, Continent*>::iterator j = continents.begin(); j != continents.end(); ++j) {
 
-	for (map<string, Country*>::iterator itr = countries.begin(); itr != countries.end(); itr++)
-	{
-		delete(itr->second);
-
+		delete j->second;
+		j->second = NULL;
 	}
-	countries.clear();
-
-
-	for (map<string, Continent*>::iterator itr = continents.begin(); itr != continents.end(); itr++)
-	{
-		delete (itr->second);	
+	for (map<string, Country*>::iterator i = countries.begin(); i != countries.end(); ++i) {
+		i->second = NULL;
 	}
-	continents.clear();
-
 }
 
 // Map Copy Constructor
 Map::Map(const Map& copy) {
 
 	/*
-	for (map<string, std::shared_ptr<Country>>::iterator i = copy.countries.begin(); i != copy.countries.end(); i++) {
-	
+	for (map<string, Country*>::iterator i = countries.begin(); i != countries.end(); i++) {
+		countries.push_back(new Country(*countries[i]));
 	}
 
 	for (map<string, Continent*>::iterator i = continents.begin(); i != continents.end(); i++) {
-		continents.push_back(new Continent(i));
+		continents.push_back(new Continent(*i));
 	}
 	*/
 }
