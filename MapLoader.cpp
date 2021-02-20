@@ -1,4 +1,5 @@
 #include "MapLoader.h"
+//MAP LOADER COMPILATION UNIT This program is used to load in maps from .txt files into the program.
 
 //default constructor
 MapLoader::MapLoader() {
@@ -13,6 +14,33 @@ MapLoader::MapLoader(string path) {
 	valid = readFile(fpath);
 }
 
+//copy constructor
+MapLoader::MapLoader(const MapLoader& copy) {
+	map = new Map(*copy.map);
+	fpath = copy.fpath;
+	valid = copy.valid;
+}
+
+//assignment operator
+MapLoader& MapLoader::operator=(const MapLoader& copy) {
+	return *(new MapLoader(copy));
+}
+
+//stream insertion operator
+ostream& operator<<(ostream& os, const MapLoader& copy) {
+	os << "path: " << copy.fpath << ", validity: " << copy.valid << ", Map Loaded: " << copy.map;
+	return os;
+}
+
+//stream extraction operator
+istream& operator>>(istream& is, MapLoader& copy) {
+	cout << "Enter new file path: " << endl;
+	is >> copy.fpath;
+	copy.load(copy.fpath);
+	return is;
+}
+
+//destructor
 MapLoader::~MapLoader() {
 	delete map;
 	map = NULL;
