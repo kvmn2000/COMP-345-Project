@@ -35,6 +35,10 @@ Map MapLoader::getMap() {
 
 //loads in a different file into map loader
 void MapLoader::load(string path) {
+	if (!map->getCountries().empty()) {
+		delete map;
+		map = new Map();
+	}
 	fpath = path;
 	valid = readFile(fpath);
 }
