@@ -1,7 +1,8 @@
 #include "BidingFacility.h";
 #include <Windows.h>
 
-void main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
+
 	cout << "Adding Sal, Tony, and Bob to the BidingList." << endl;
 	BidingFacility* biding1 = new BidingFacility("Sal");
 	BidingFacility* biding2 = new BidingFacility("Tony");
@@ -14,11 +15,12 @@ void main(int argc, char* argv[]) {
 	BidingFacility highestbidder = bidinglist.bid();
 	//By a tie
 	cout << "Bidder wins by tie and name in alphabetical order" << endl;
-	bidinglist.bid();
+	BidingFacility highestbidder2 = bidinglist.bid();
 	//By all bids are 0
 	cout << "Bidder wins by tie with all bids being zero" << endl;
-	bidinglist.bid();
+	BidingFacility highestbidder3 = bidinglist.bid();
 	biding1 = nullptr;
 	biding2 = nullptr;
 	biding3 = nullptr;
+	return 0;
 }

@@ -29,6 +29,7 @@ BidingFacility& BidingFacility::operator=(const BidingFacility& copy) {
 //Insetion operator for BidingFacility
 ostream& operator<<(ostream& os, BidingFacility& copy) {
 	os << copy.getName() << "'s Biding Facility, Coins put in: " << copy.getCoins();
+	return os;
 }
 
 //Getters and Setters
@@ -158,15 +159,15 @@ BidingFacility& BidingList::bid() {
 			}
 			i = nullptr;
 		}
-		BidingFacility winner;
-		for (BidingFacility* i : winners) {
-			if (winners_name == i->getName()) {
-				winner = *i;
+		BidingFacility* winnerptr = winners.front();
+		while (!winners.empty()) {
+			if (winners.front()->getName() == winners_name) {
+				winnerptr = winners.front();
 			}
 			winners.front() = nullptr;
-			i = nullptr;
+			winners.pop_front();
 		}
-		winners.clear();
+		BidingFacility& winner = *winnerptr;
 		resetCoins(winners_name);
 		cout << winners_name << " won in a tie!" << endl;
 		return winner;
