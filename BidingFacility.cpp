@@ -1,6 +1,6 @@
 #include "BidingFacility.h"
 #include <Windows.h>
-
+//Kevin Nguyen Comp-345 Biding Facilities let players bid coins against one another to see who is the highest bidder
 //Constructors for BidingFacilities
 
 //Default Constructor
