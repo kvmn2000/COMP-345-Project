@@ -1,10 +1,10 @@
 #include "BidingFacility.h"
 #include <Windows.h>
-//Kevin Nguyen Comp-345 Biding Facilities let players bid coins against one another to see who is the highest bidder
+
 //Constructors for BidingFacilities
 
 //Default Constructor
-BidingFacility::BidingFacility(){
+BidingFacility::BidingFacility() {
 	coins = 0;
 	player_name = "";
 }
@@ -19,6 +19,10 @@ BidingFacility::BidingFacility(string name) {
 BidingFacility::BidingFacility(const BidingFacility& b) {
 	coins = b.coins;
 	player_name = b.player_name;
+}
+
+BidingFacility::~BidingFacility() {
+
 }
 
 //Assignment operator for BidingFacility
@@ -87,7 +91,7 @@ int BidingList::getSize() {
 }
 
 //Adds a player's bidingfacility in the list, increments size by 1
-void BidingList::addPlayer(BidingFacility* player){
+void BidingList::addPlayer(BidingFacility* player) {
 	players.push_back(player);
 	size++;
 }
@@ -101,7 +105,7 @@ bool BidingList::startBidding() {
 	string hidden_input;
 	for (BidingFacility* i : players) {
 		int coins;
-		cout << "Enter how many coins you would like to bid " << i->getName()<< ":" << endl;
+		cout << "Enter how many coins you would like to bid " << i->getName() << ":" << endl;
 		getline(cin, hidden_input);
 		coins = std::stoi(hidden_input);
 		i->setCoins(coins);
@@ -154,7 +158,7 @@ BidingFacility& BidingList::bid() {
 	else {
 		string winners_name = winners.front()->getName();
 		for (BidingFacility* i : winners) {
-			if (winners_name.compare(i->getName())>0) {
+			if (winners_name.compare(i->getName()) > 0) {
 				winners_name = i->getName();
 			}
 			i = nullptr;
