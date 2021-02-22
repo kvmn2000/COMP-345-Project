@@ -162,5 +162,5 @@ void Player::destroyArmy()
     std::cout << "SUCCESS!!! Please removed one of " << playerName << "'s armies from " << regionName<< "\n";
 */
   }
-
+//Note*** a vector? will be implemented later on to represent which cards the player has in hand. 
 
