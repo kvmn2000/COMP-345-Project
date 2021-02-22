@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 #include <list>
-//Kevin Nguyen Comp 345
 
 using namespace std;
 
@@ -12,12 +11,13 @@ public:
 	BidingFacility();
 	BidingFacility(string name);
 	BidingFacility(const BidingFacility& copy);
+	~BidingFacility();
 	void setCoins(int n);
 	void setName(string name);
 	int getCoins();
 	string getName();
 	BidingFacility& operator=(const BidingFacility& other);
-	friend ostream& operator << (ostream& os, const BidingFacility& other);
+	friend ostream& operator << (ostream& os, BidingFacility& other);
 private:
 	int coins;
 	string player_name;

@@ -1,10 +1,12 @@
 #pragma once
+
+#include "Map.h"
+
 #include <vector>
 #include <string>
 #include <iostream>
 #include <list>
 #include <map>
-#include "Map.h"
 #include <fstream>
 
 using namespace std;
@@ -23,6 +25,7 @@ public:
 	MapLoader& operator=(const MapLoader& other);
 	friend ostream& operator <<(ostream& os, const MapLoader& other);
 	friend istream& operator >>(istream& is, MapLoader& other);
+
 private:
 	string fpath;
 	Map* map;

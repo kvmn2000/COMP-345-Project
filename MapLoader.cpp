@@ -43,7 +43,6 @@ istream& operator>>(istream& is, MapLoader& copy) {
 
 //destructor
 MapLoader::~MapLoader() {
-	delete map;
 	map = NULL;
 }
 
@@ -92,12 +91,12 @@ bool MapLoader::readFile(string path) {
 		}
 		if (readingContinent) {
 			current_country = line;
-			
+
 			Country* country = new Country(current_country, current_continent);
-			
+
 			map->addCountry(country);
 			map->getContinent(current_continent)->addCountrytoContinent(country);
-			
+
 		}
 		if (readingEdge) {
 			string neighbor = line;
