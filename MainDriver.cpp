@@ -64,10 +64,13 @@ int main(int argc, const char* argv[]) {
         playerList[i] = new Player(name,numOfPlayers);
     }
 
+    cout << endl;
+    cout << "Players have been added"<< "\n";
+    cout << endl;
 
-    vector<Player*>current_player;
+    //vector<Player*>current_player;
     vector<Player*>::iterator iter, end;
-    for (iter = current_player.begin(), end = current_player.end(); iter != end; ++iter) {
+    for (iter = playerList.begin(), end = playerList.end(); iter != end; ++iter) {
         // Output Information about the test user
         cout << "Player name:" << (*iter)->getName() << "\n";
         cout << "Each Player will start with: " << "\n";
@@ -77,28 +80,14 @@ int main(int argc, const char* argv[]) {
 
         cout << "Adding player to BidingList." << endl;
         bidinglist.addPlayer((*iter)->getBidingFacility());
+        cout << endl;
       
     }
 
-    cout << "Bidder wins by highest bidding" << endl;
-    BidingFacility highestbidder = bidinglist.bid();
-    //By a tie
-    cout << "Bidder wins by tie and name in alphabetical order" << endl;
-    BidingFacility highestbidder2 = bidinglist.bid();
-    //By all bids are 0
-    cout << "Bidder wins by tie with all bids being zero" << endl;
-    BidingFacility highestbidder3 = bidinglist.bid();
-  
-    /*
+   cout << "Bidder wins by highest bidding" << endl;
+   BidingFacility highestbidder = bidinglist.bid();
 
-    cout << "Testing the Deck, the topBoard, hand generation and the draw( )/exchange( ) methods" << endl;
-    Deck deck1;
-    std::vector<Cards*> tb = deck1.topBoardGenetor(deck1);
-    std::vector<Cards*>* hand = new std::vector<Cards*>();
-    deck1.exchange(*hand, tb, deck1);
-    deck1.exchange(*hand, tb, deck1);
-    deck1.displayTopBoard(tb);
-    */
+  
 
     return 0;
 }
