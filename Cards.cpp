@@ -253,6 +253,8 @@ void Deck::exchange(std::vector<Cards*> &topBoard, Deck &deck) {
     index = position - 1;
     cout << "You have bought: " << topBoard.front()->getAction() << endl;
     // update gamehand and update top board
+    delete topBoard[index];
+    topBoard[index] = nullptr;
     topBoard.erase(topBoard.begin()+index);
     topBoard.emplace_back(deck.draw());
 }
