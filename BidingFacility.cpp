@@ -1,5 +1,7 @@
 #include "BidingFacility.h"
 #include <Windows.h>
+ 
+
 
 //Constructors for BidingFacilities
 
@@ -106,12 +108,13 @@ bool BidingList::startBidding() {
 	for (BidingFacility* i : players) {
 		int coins;
 		cout << "Enter how many coins you would like to bid " << i->getName() << ":" << endl;
-		getline(cin, hidden_input);
-		coins = std::stoi(hidden_input);
+		//getline(cin, hidden_input);
+		//coins = std::stoi(hidden_input);
+		cin >> coins;
 		i->setCoins(coins);
 		i = nullptr;
 	}
-
+	cout << endl;
 	SetConsoleMode(hStdin, mode);
 	return false;
 }
@@ -152,6 +155,7 @@ BidingFacility& BidingList::bid() {
 		BidingFacility& winner = *winners.front();
 		winners.front() = nullptr;
 		resetCoins(winner.getName());
+		cout << endl;
 		cout << winner.getName() << " won with the highest bid!" << endl;
 		return winner;
 	}

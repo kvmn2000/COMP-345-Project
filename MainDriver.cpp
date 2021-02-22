@@ -88,6 +88,5 @@ int main(int argc, const char* argv[]) {
    BidingFacility highestbidder = bidinglist.bid();
 
   
-
     return 0;
 }
