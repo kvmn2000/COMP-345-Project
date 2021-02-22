@@ -10,28 +10,22 @@ Cards::Cards() {
 }
 
 ostream &operator<<(ostream &os, const Cards &cards) {
-    os << *cards.getGood() << " (" << *cards.getNumOfGood() << ") - " << *cards.getAction();
+    os << cards.getGood() << " (" << cards.getNumOfGood() << ") - " << cards.getAction();
     return os;
 }
 
 Cards::~Cards() {
-    if (good){
-        delete good;
-        good = nullptr;
-    }
-    if (action){
-        delete action;
-        action = nullptr;
-    }
-    if (numOfGood){
-        delete numOfGood;
-        numOfGood = nullptr;
-    }
+    delete good;
+    good = nullptr;
+    delete action;
+    action = nullptr;
+    delete numOfGood;
+    numOfGood = nullptr;
 }
 
 //Accessor methods.
-string *Cards::getGood() const {
-    return good;
+string Cards::getGood() const {
+    return *good;
 }
 
 //Mutator methods.
@@ -40,8 +34,8 @@ void Cards::setGood(string good) {
 }
 
 //Accessor methods.
-string *Cards::getAction() const {
-    return this->action;
+string Cards::getAction() const {
+    return *action;
 }
 
 //Mutator methods.
@@ -57,8 +51,8 @@ Cards::Cards(int numOfGood, string good, string action) {
 }
 
 //Accessor methods.
-int *Cards::getNumOfGood() const {
-    return this->numOfGood;
+int Cards::getNumOfGood() const {
+    return *numOfGood;
 }
 
 //Mutator methods.
@@ -111,21 +105,61 @@ Cards* cards40 = new Cards(1,"Anvil", "MOVE_OVER_GROUND 4");
 Cards* cards41 = new Cards(1,"Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 4");
 Cards* cards42 = new Cards(1,"Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 3");
 
-
+Deck::Deck() {
+    position = new int();
+    deck.push_back(cards01);
+    deck.push_back(cards02);
+    deck.push_back(cards03);
+    deck.push_back(cards04);
+    deck.push_back(cards05);
+    deck.push_back(cards06);
+    deck.push_back(cards07);
+    deck.push_back(cards08);
+    deck.push_back(cards09);
+    deck.push_back(cards10);
+    deck.push_back(cards11);
+    deck.push_back(cards12);
+    deck.push_back(cards13);
+    deck.push_back(cards14);
+    deck.push_back(cards15);
+    deck.push_back(cards16);
+    deck.push_back(cards17);
+    deck.push_back(cards18);
+    deck.push_back(cards19);
+    deck.push_back(cards20);
+    deck.push_back(cards21);
+    deck.push_back(cards22);
+    deck.push_back(cards23);
+    deck.push_back(cards24);
+    deck.push_back(cards25);
+    deck.push_back(cards26);
+    deck.push_back(cards27);
+    deck.push_back(cards28);
+    deck.push_back(cards29);
+    deck.push_back(cards30);
+    deck.push_back(cards31);
+    deck.push_back(cards32);
+    deck.push_back(cards33);
+    deck.push_back(cards34);
+    deck.push_back(cards35);
+    deck.push_back(cards36);
+    deck.push_back(cards37);
+    deck.push_back(cards38);
+    deck.push_back(cards39);
+    deck.push_back(cards40);
+    deck.push_back(cards41);
+    deck.push_back(cards42);
+}
 
 //Deck Generation 
 
 Deck::~Deck() {
-    if(cost){
-        delete cost;
-        cost = nullptr;
-    }
-
-//Deletes the card the user selects
-
-    if(position){
-        delete position;
-        position = nullptr;
+    delete position;
+    position = nullptr;
+    while (!deck.empty()) {
+        delete deck.back();
+        deck.back() = nullptr;
+        deck.pop_back();
     }
 }
 
@@ -153,8 +187,9 @@ std::vector<Cards*> Deck::topBoardGenetor(Deck &deck) {
 void Deck::displayTopBoard(std::vector<Cards*> &topBoard) {
     int j = 0;
     int index =  0;
-    for (auto it = topBoard.begin(); it != topBoard.end(); ++it)
+    for (auto it = topBoard.begin(); it != topBoard.end(); ++it) {
         cout << ++j << ") " << posArray[index++] << " Coins - " << **it << endl;
+    }
 }
 
 //Updates what cards are at the top of the board. 
@@ -177,12 +212,13 @@ std::vector<Cards*> Deck::handGenetor(Cards* &card) {
 //Displays the user's hand of cards. 
 void Deck::displayHand(std::vector<Cards*> &hand) {
     for (auto it = hand.begin(); it != hand.end(); ++it) {
-        std::cout << ' ' << **it << endl;
+        std::cout << ' ' << *it << endl;
     }
 }
 
 //Here is the echange method to exchange the user's cards. 
-void Deck::exchange(Player &player, std::vector<Cards*> &topBoard, Deck &deck) {
+//Eventually we will add a way for players to pay for the card using their coins, right now it shows the cost of the card.
+void Deck::exchange(std::vector<Cards*> &topBoard, Deck &deck) {
     bool successfullPurchase = false;
     int cost, position, index;
 
@@ -191,7 +227,6 @@ void Deck::exchange(Player &player, std::vector<Cards*> &topBoard, Deck &deck) {
     displayTopBoard(topBoard);
 
     // Prompt/Allows the user to purchase a card.
-    cout << player.getName() << ", you have " << player.getCoins() << " coins remaining in your stash." << endl;
     cout << "Which card do you want to buy? Please enter an integer from 1 to 6: " << endl;
     do {
         cin >> position;
@@ -211,15 +246,19 @@ void Deck::exchange(Player &player, std::vector<Cards*> &topBoard, Deck &deck) {
         else if (position == 6) {
             cost = 3;
         }
-        successfullPurchase = player.payCoin(cost);
+        successfullPurchase = payCoin(cost);
     } while (!successfullPurchase);
 
     // purchase confirmation
     index = position - 1;
-
+    cout << "You have bought: " << topBoard.front()->getAction() << endl;
     // update gamehand and update top board
-    player.getGameHand()->emplace_back(topBoard.at(index));
     topBoard.erase(topBoard.begin()+index);
     topBoard.emplace_back(deck.draw());
-    cout << player.getName() << " added the following card to their hand: " << *player.getGameHand()->back() << endl;
+}
+
+//Eventually Players will be made to pay their coins for cards, but right now it just shows the price of the card
+bool Deck::payCoin(int cost) {
+    cout << "The cost of this card is " << cost << " coins." << endl;
+    return true;
 }
