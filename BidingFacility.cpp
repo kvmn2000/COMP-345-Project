@@ -1,6 +1,6 @@
 #include "BidingFacility.h"
 #include <Windows.h>
- 
+
 
 
 //Constructors for BidingFacilities

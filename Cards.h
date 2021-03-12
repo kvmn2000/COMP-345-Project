@@ -37,7 +37,7 @@ public:
     void setNumOfGood(int numOfGood);
 
     // operator overides
-    friend ostream &operator<<(ostream &os, const Cards &cards);
+    friend ostream& operator<<(ostream& os, const Cards& cards);
 };
 
 class Deck
@@ -46,7 +46,7 @@ class Deck
 private:
     int* cost;
     int* position;
-    int posArray[6] = {0, 1, 1, 2, 2, 3};
+    int posArray[6] = { 0, 1, 1, 2, 2, 3 };
     vector<Cards*> topBoard;
     vector<Cards*> deck;
 
@@ -57,11 +57,11 @@ public:
 
     // gameplay methods
     Cards* draw();
-    vector<Cards*> topBoardGenetor(Deck &deck);
-    void displayTopBoard(vector<Cards*> &topBoard);
-    void updateTopBoard(int &position, vector<Cards*> &topBoard, Deck &deck);
-    vector<Cards*> handGenetor(Cards* &card);
-    void displayHand(vector<Cards*> &hand);
-    void exchange(vector<Cards*> &topBoard, Deck &deck);
+    vector<Cards*> topBoardGenetor(Deck& deck);
+    void displayTopBoard(vector<Cards*>& topBoard);
+    void updateTopBoard(int& position, vector<Cards*>& topBoard, Deck& deck);
+    vector<Cards*> handGenetor(Cards*& card);
+    void displayHand(vector<Cards*>& hand);
+    void exchange(vector<Cards*>& topBoard, Deck& deck);
     bool payCoin(int cost);
 };

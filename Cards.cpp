@@ -9,7 +9,7 @@ Cards::Cards() {
     this->action = nullptr;
 }
 
-ostream &operator<<(ostream &os, const Cards &cards) {
+ostream& operator<<(ostream& os, const Cards& cards) {
     os << cards.getGood() << " (" << cards.getNumOfGood() << ") - " << cards.getAction();
     return os;
 }
@@ -62,48 +62,48 @@ void Cards::setNumOfGood(int numOfGood) {
 
 //All cards in the deck by good and action
 
-Cards* cards01 = new Cards(1,"Wild", "MOVE_OVER_WATER 2");
-Cards* cards02 = new Cards(1,"Wild", "MOVE_OVER_WATER 2");
-Cards* cards03 = new Cards(1,"Wild", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards04 = new Cards(1,"Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards05 = new Cards(1,"Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards06 = new Cards(1,"Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards07 = new Cards(1,"Crystal", "PLACE_NEW_ARMIES_ON_BOARD 1");
-Cards* cards08 = new Cards(1,"Crystal", "MOVE_OVER_GROUND 2");
-Cards* cards09 = new Cards(1,"Rock", "MOVE_OVER_GROUND 2");
-Cards* cards10 = new Cards(1,"Rock", "MOVE_OVER_WATER 2");
-Cards* cards11 = new Cards(1,"Rock", "MOVE_OVER_WATER 2");
+Cards* cards01 = new Cards(1, "Wild", "MOVE_OVER_WATER 2");
+Cards* cards02 = new Cards(1, "Wild", "MOVE_OVER_WATER 2");
+Cards* cards03 = new Cards(1, "Wild", "PLACE_NEW_ARMIES_ON_BOARD 2");
+Cards* cards04 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
+Cards* cards05 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
+Cards* cards06 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
+Cards* cards07 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 1");
+Cards* cards08 = new Cards(1, "Crystal", "MOVE_OVER_GROUND 2");
+Cards* cards09 = new Cards(1, "Rock", "MOVE_OVER_GROUND 2");
+Cards* cards10 = new Cards(1, "Rock", "MOVE_OVER_WATER 2");
+Cards* cards11 = new Cards(1, "Rock", "MOVE_OVER_WATER 2");
 Cards* cards12 = new Cards(1, "Rock", "MOVE_OVER_WATER 3");
-Cards* cards13 = new Cards(1,"Rock", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards14 = new Cards(1,"Rock", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards15 = new Cards(1,"Rock", "PLACE_NEW_ARMIES_ON_BOARD 2 OR BUILD_A_CITY 1");
-Cards* cards16 = new Cards(1,"Carrot", "BUILD_A_CITY 1");
-Cards* cards17 = new Cards(1,"Carrot", "DESTROY_ARMY 1 AND PLACE_NEW_ARMIES_ON_BOARD 1");
-Cards* cards18 = new Cards(1,"Carrot", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards19 = new Cards(1,"Carrot", "MOVE_OVER_GROUND 4");
-Cards* cards20 = new Cards(1,"Carrot", "MOVE_OVER_GROUND 4");
-Cards* cards21 = new Cards(1,"Carrot","PLACE_NEW_ARMIES_ON_BOARD 4 OR MOVE_OVER_GROUND 2");
-Cards* cards22 = new Cards(1,"Carrot", "MOVE_OVER_GROUND 5");
-Cards* cards23 = new Cards(1,"Carrot", "BUILD_A_CITY 1");
-Cards* cards24 = new Cards(1,"Carrot", "MOVE_OVER_WATER 3");
-Cards* cards25 = new Cards(2,"Carrot", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards26 = new Cards(1,"Tree", "MOVE_OVER_GROUND 5");
-Cards* cards27 = new Cards(1,"Tree", "MOVE_OVER_GROUND 6");
-Cards* cards28 = new Cards(1,"Tree", "PLACE_NEW_ARMIES_ON_BOARD 2 OR MOVE_OVER_GROUND 3");
-Cards* cards29 = new Cards(1,"Tree", "DESTROY_ARMY 1 OR BUILD_A_CITY 1");
-Cards* cards30 = new Cards(1,"Tree", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards31 = new Cards(1,"Tree", "MOVE_OVER_WATER 4");
-Cards* cards32 = new Cards(1,"Tree", "MOVE_OVER_WATER 3");
-Cards* cards33 = new Cards(1,"Tree", "BUILD_A_CITY 1");
-Cards* cards34 = new Cards(1,"Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards35 = new Cards(1,"Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards36 = new Cards(1,"Anvil", "MOVE_OVER_WATER 3");
-Cards* cards37 = new Cards(1,"Anvil", "BUILD_A_CITY 1");
-Cards* cards38 = new Cards(2,"Anvil", "MOVE_OVER_GROUND 4");
-Cards* cards39 = new Cards(1,"Anvil", "MOVE_OVER_GROUND 5");
-Cards* cards40 = new Cards(1,"Anvil", "MOVE_OVER_GROUND 4");
-Cards* cards41 = new Cards(1,"Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 4");
-Cards* cards42 = new Cards(1,"Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 3");
+Cards* cards13 = new Cards(1, "Rock", "PLACE_NEW_ARMIES_ON_BOARD 3");
+Cards* cards14 = new Cards(1, "Rock", "PLACE_NEW_ARMIES_ON_BOARD 3");
+Cards* cards15 = new Cards(1, "Rock", "PLACE_NEW_ARMIES_ON_BOARD 2 OR BUILD_A_CITY 1");
+Cards* cards16 = new Cards(1, "Carrot", "BUILD_A_CITY 1");
+Cards* cards17 = new Cards(1, "Carrot", "DESTROY_ARMY 1 AND PLACE_NEW_ARMIES_ON_BOARD 1");
+Cards* cards18 = new Cards(1, "Carrot", "PLACE_NEW_ARMIES_ON_BOARD 3");
+Cards* cards19 = new Cards(1, "Carrot", "MOVE_OVER_GROUND 4");
+Cards* cards20 = new Cards(1, "Carrot", "MOVE_OVER_GROUND 4");
+Cards* cards21 = new Cards(1, "Carrot", "PLACE_NEW_ARMIES_ON_BOARD 4 OR MOVE_OVER_GROUND 2");
+Cards* cards22 = new Cards(1, "Carrot", "MOVE_OVER_GROUND 5");
+Cards* cards23 = new Cards(1, "Carrot", "BUILD_A_CITY 1");
+Cards* cards24 = new Cards(1, "Carrot", "MOVE_OVER_WATER 3");
+Cards* cards25 = new Cards(2, "Carrot", "PLACE_NEW_ARMIES_ON_BOARD 3");
+Cards* cards26 = new Cards(1, "Tree", "MOVE_OVER_GROUND 5");
+Cards* cards27 = new Cards(1, "Tree", "MOVE_OVER_GROUND 6");
+Cards* cards28 = new Cards(1, "Tree", "PLACE_NEW_ARMIES_ON_BOARD 2 OR MOVE_OVER_GROUND 3");
+Cards* cards29 = new Cards(1, "Tree", "DESTROY_ARMY 1 OR BUILD_A_CITY 1");
+Cards* cards30 = new Cards(1, "Tree", "PLACE_NEW_ARMIES_ON_BOARD 3");
+Cards* cards31 = new Cards(1, "Tree", "MOVE_OVER_WATER 4");
+Cards* cards32 = new Cards(1, "Tree", "MOVE_OVER_WATER 3");
+Cards* cards33 = new Cards(1, "Tree", "BUILD_A_CITY 1");
+Cards* cards34 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3");
+Cards* cards35 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3");
+Cards* cards36 = new Cards(1, "Anvil", "MOVE_OVER_WATER 3");
+Cards* cards37 = new Cards(1, "Anvil", "BUILD_A_CITY 1");
+Cards* cards38 = new Cards(2, "Anvil", "MOVE_OVER_GROUND 4");
+Cards* cards39 = new Cards(1, "Anvil", "MOVE_OVER_GROUND 5");
+Cards* cards40 = new Cards(1, "Anvil", "MOVE_OVER_GROUND 4");
+Cards* cards41 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 4");
+Cards* cards42 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 3");
 
 Deck::Deck() {
     position = new int();
@@ -165,7 +165,7 @@ Deck::~Deck() {
 
 //The draw method shuffles the deck and draws (returns) the cards for the user. 
 Cards* Deck::draw() {
-    std::srand (unsigned (std::time(0)));   
+    std::srand(unsigned(std::time(0)));
     std::random_shuffle(deck.begin(), deck.end());
 
     auto card = deck.back();
@@ -175,7 +175,7 @@ Cards* Deck::draw() {
 }
 
 //This generates what cards will be at the top of the board. 
-std::vector<Cards*> Deck::topBoardGenetor(Deck &deck) {
+std::vector<Cards*> Deck::topBoardGenetor(Deck& deck) {
     auto tb = new std::vector<Cards*>();
     for (auto i = 0; i < 6; i++) {
         tb->emplace_back(deck.draw());
@@ -184,33 +184,33 @@ std::vector<Cards*> Deck::topBoardGenetor(Deck &deck) {
 }
 
 //This diplays the availible cards at the top of the board.
-void Deck::displayTopBoard(std::vector<Cards*> &topBoard) {
+void Deck::displayTopBoard(std::vector<Cards*>& topBoard) {
     int j = 0;
-    int index =  0;
+    int index = 0;
     for (auto it = topBoard.begin(); it != topBoard.end(); ++it) {
         cout << ++j << ") " << posArray[index++] << " Coins - " << **it << endl;
     }
 }
 
 //Updates what cards are at the top of the board. 
-void Deck::updateTopBoard(int &position, std::vector<Cards*> &topBoard, Deck &deck) {
+void Deck::updateTopBoard(int& position, std::vector<Cards*>& topBoard, Deck& deck) {
     int index = position - 1;
-    topBoard.erase(topBoard.begin()+index);
-    cout << "Top Board cards series size is " << topBoard.size() << endl ;
+    topBoard.erase(topBoard.begin() + index);
+    cout << "Top Board cards series size is " << topBoard.size() << endl;
     topBoard.emplace_back(deck.draw());
-    cout << "Top Board cards series size is " << topBoard.size() << endl ;
+    cout << "Top Board cards series size is " << topBoard.size() << endl;
     displayTopBoard(topBoard);
 }
 
 //Generates the user's hand of cards.
-std::vector<Cards*> Deck::handGenetor(Cards* &card) {
+std::vector<Cards*> Deck::handGenetor(Cards*& card) {
     std::vector<Cards*> hand;
     hand.emplace_back(card);
     return hand;
 }
 
 //Displays the user's hand of cards. 
-void Deck::displayHand(std::vector<Cards*> &hand) {
+void Deck::displayHand(std::vector<Cards*>& hand) {
     for (auto it = hand.begin(); it != hand.end(); ++it) {
         std::cout << ' ' << *it << endl;
     }
@@ -218,12 +218,12 @@ void Deck::displayHand(std::vector<Cards*> &hand) {
 
 //Here is the echange method to exchange the user's cards. 
 //Eventually we will add a way for players to pay for the card using their coins, right now it shows the cost of the card.
-void Deck::exchange(std::vector<Cards*> &topBoard, Deck &deck) {
+void Deck::exchange(std::vector<Cards*>& topBoard, Deck& deck) {
     bool successfullPurchase = false;
     int cost, position, index;
 
     // Displays the top board before user purchases a card
-    cout<< "Top Board:" << endl;
+    cout << "Top Board:" << endl;
     displayTopBoard(topBoard);
 
     // Prompt/Allows the user to purchase a card.
@@ -255,7 +255,7 @@ void Deck::exchange(std::vector<Cards*> &topBoard, Deck &deck) {
     // update gamehand and update top board
     delete topBoard[index];
     topBoard[index] = nullptr;
-    topBoard.erase(topBoard.begin()+index);
+    topBoard.erase(topBoard.begin() + index);
     topBoard.emplace_back(deck.draw());
 }
 
