@@ -35,7 +35,7 @@ public:
 	Player* getOwner();
 	void setArmy(int amount);
 	int getArmy();
-	
+
 	bool hasNeighbors();
 	void addNeighbor(Country* country);
 	void setNeighbors(vector<Country*> country_neighbor);
@@ -63,7 +63,7 @@ public:
 	Continent(string continent_name, vector<Country*> continent_countries);
 	Continent(const  Continent& copy);
 	~Continent();
-	
+
 	Continent& operator=(const  Continent& copy);
 	friend ostream& operator << (ostream& out, const Continent& copy);
 	friend istream& operator >> (istream& in, Continent& copy);
@@ -89,10 +89,10 @@ public:
 	Map() = default;
 	Map(const Map& copy);
 	~Map();
-	
+
 	Map& operator=(const Map& copy);
 	friend ostream& operator << (ostream& out, const Map& copy);
-	
+
 	int countryCount();
 	int continentCount();
 	void addCountry(Country* country_Name);
@@ -102,7 +102,7 @@ public:
 	vector<Country*> getCountries();
 	vector<Continent*> getContinents();
 	vector<Country*> getCountriesByContinent(string continentName);
-	bool toValidate();
+	bool validate();
 
 
 private:

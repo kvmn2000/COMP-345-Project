@@ -1,12 +1,11 @@
 #pragma once
 
 #include "Map.h"
+#include "dirent.h"
 
 #include <vector>
 #include <string>
 #include <iostream>
-#include <list>
-#include <map>
 #include <fstream>
 
 using namespace std;
@@ -14,22 +13,25 @@ using namespace std;
 class MapLoader {
 
 public:
-	MapLoader();
-	MapLoader(string path);
-	MapLoader(const MapLoader& copy);
-	~MapLoader();
 
-	string getPath(MapLoader maploader);
-	Map getMap();
-	void load(string path);
-	MapLoader& operator=(const MapLoader& other);
+	MapLoader();
+	~MapLoader();
+	MapLoader(const MapLoader& copy);
+	
+	Map* selectMap(const string mapDirectory);
+	string getFileName();
+
+	MapLoader& operator = (const MapLoader& copy);
 	friend ostream& operator <<(ostream& os, const MapLoader& other);
 	friend istream& operator >>(istream& is, MapLoader& other);
 
 private:
-	string fpath;
-	Map* map;
-	bool valid;
-	bool readFile(string name);
-	bool validFile(string path);
+
+	string fileName;
+
+	Map* loadMap(string fileName);
+	vector<string>displayAllMaps(const string mapDirectory);
+	int getUserInputInteger(string, int, int);
+	string getUserInputString(string, string, string);
+
 };
