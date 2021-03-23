@@ -44,20 +44,18 @@ GameEngine& GameEngine::operator=(const GameEngine& copy)
 
 GameEngine::~GameEngine()
 {
-    delete gameMap;
+    gameMap->~Map();
     gameMap = NULL;
 
-    delete gameDeck;
+    gameDeck->~Deck();
     gameDeck = NULL;
 
-    delete bidingList;
-    bidingList = NULL;
+    // Need to fix
+    cout << endl << "---------- DELETING BIDING LIST-----------" << endl;
+    // Need to fix
+    cout << endl << "---------- DELETING PLAYER -----------" << endl;
+   
 
-    for (int i = 0; i < players.size(); ++i) {
-        delete players[i];
-        players[i] = NULL;
-    }
-    players.clear();
 }
 
 // create new player objectinitializing its ID and pushing it into vector players

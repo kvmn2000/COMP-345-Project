@@ -24,7 +24,7 @@ BidingFacility::BidingFacility(const BidingFacility& b) {
 }
 
 BidingFacility::~BidingFacility() {
-
+	
 }
 
 //Assignment operator for BidingFacility
@@ -121,6 +121,9 @@ bool BidingList::startBidding() {
 
 //Destructor of BidingList
 BidingList::~BidingList() {
+
+	cout << endl << "---------- DELETING BIDING LIST-----------" << endl;
+
 	while (!players.empty()) {
 		delete players.front();
 		players.front() = nullptr;
