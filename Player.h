@@ -23,6 +23,7 @@ public:
     //below are the constructors 
     Player() = default;
     Player(string name);
+    Player(int playerId);
     Player(string name, int amountOfPlayer);
     Player(const Player& copy);
     ~Player();
@@ -45,15 +46,15 @@ public:
     void takeAction();
 
     //below are the accessors
-    int getArmies() const;
-    int getCoins() const;
-    int getCities() const;
-    string getName() const;
-    int getId() const;
+    int getArmies();
+    int getCoins();
+    int getCities();
+    string getName();
+    int getId();
 
 
     //vector<Cards*> getGameHand() const;
-    BidingFacility* getBidingFacility();
+   BidingFacility* getBidingFacility();
 
     //below are the Mutators
     void setArmies(int armies);
@@ -72,7 +73,7 @@ private:
     string name;
     //vector <Country*> countryOwned;
     //vector <Cards*> gameHand;
-    BidingFacility* bidingFacility;
+   BidingFacility* bidingFacility;
 
 
 };

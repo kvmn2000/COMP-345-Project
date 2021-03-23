@@ -4,6 +4,13 @@
 #include <string>
 #include <iostream>
 
+
+
+Player::Player(int playerId)
+{
+    id = playerId;
+}
+
 //default constructor with parameter
 Player::Player(std::string playerName)
 {
@@ -23,7 +30,7 @@ Player::Player(string playerName, int numOfPlayers)
     id = 0;
     cities = 0;
     armies = 0;
-    bidingFacility = new BidingFacility(playerName);
+   // bidingFacility = new BidingFacility(playerName);
 
     //Number of players decides how many coins they will recieve. 2 players = 14 coins, 3=11 coins and so on.
     switch (numOfPlayers)
@@ -50,8 +57,8 @@ Player::Player(const Player& copy) {
 
 Player::~Player() {
 
-    delete bidingFacility;
-    bidingFacility = NULL;
+   delete bidingFacility;
+   bidingFacility = NULL;
 }
 
 Player& Player::operator=(const Player& copy)
@@ -76,15 +83,29 @@ istream& operator>>(istream& in, Player& copy)
 
 //below are the accessors
 
-int Player::getArmies() const { return armies; }
+int Player::getArmies()
+{ 
+    return armies; 
+}
 
-int Player::getCoins() const { return coins; }
+int Player::getCoins()
+{ return coins; 
+}
 
-int Player::getCities() const { return cities; }
+int Player::getCities() 
+{ 
+    return cities;
+}
 
-string Player::getName() const { return name; }
+string Player::getName()
+{
+    return name;
+}
 
-int Player::getId() const { return id; }
+int Player::getId() 
+{ 
+    return id; 
+}
 
 
 //std::vector<Cards*> *Player::getGameHand() const { return gameHand; }
@@ -92,6 +113,7 @@ int Player::getId() const { return id; }
 BidingFacility* Player::getBidingFacility() {
     return bidingFacility;
 }
+
 
 //below are the Mutators
 void Player::setId(int id) { this->id = id; }
@@ -153,14 +175,14 @@ void Player::buildCity()
 //below is the method that enables the player to destroy the army of an opponent
 void Player::destroyArmy()
 {
-/*
-    std::string playerName;
-    std::string regionName;
-    bool invalidPlayerName = false;
+    /*
+        std::string playerName;
+        std::string regionName;
+        bool invalidPlayerName = false;
 
-    gameBoard.destroyArmy(regionName, playerName);
-    std::cout << "SUCCESS!!! Please removed one of " << playerName << "'s armies from " << regionName<< "\n";
-*/
-  }
+        gameBoard.destroyArmy(regionName, playerName);
+        std::cout << "SUCCESS!!! Please removed one of " << playerName << "'s armies from " << regionName<< "\n";
+    */
+}
 //Note*** a vector? will be implemented later on to represent which cards the player has in hand. 
 

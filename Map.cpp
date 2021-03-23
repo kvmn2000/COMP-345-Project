@@ -1,7 +1,7 @@
 #include "Map.h"
 
 /*
-    COUNTRY CLASS
+	COUNTRY CLASS
 */
 
 // Country constructor with name as argument
@@ -46,7 +46,7 @@ Country::Country(const Country& copy) {
 }
 
 // Destructor
-Country::~Country(){
+Country::~Country() {
 
 	for (auto& p : neighbors)
 	{
@@ -57,7 +57,7 @@ Country::~Country(){
 
 	owner = NULL;
 	delete owner;
-	
+
 }
 
 Country& Country::operator=(const Country& copy)
@@ -122,7 +122,7 @@ void Country::addNeighbor(Country* country)
 }
 
 // Adds a vector of neighbors to country
-void Country::setNeighbors(vector<Country*> country_neighbor) 
+void Country::setNeighbors(vector<Country*> country_neighbor)
 {
 	neighbors = country_neighbor;
 }
@@ -148,8 +148,8 @@ vector<Country*> Country::getNeighbors() {
 vector<string> Country::getNeighborsName()
 {
 	vector<string> neighborsName = vector<string>();
-	
-	for (auto temp : neighbors){
+
+	for (auto temp : neighbors) {
 		neighborsName.push_back(temp->getName());
 	}
 	return neighborsName;
@@ -244,7 +244,7 @@ int Continent::numberOfCountry()
 bool Continent::checkForCountry(string countryName)
 {
 	for (int i = 0; i < continentCountries.size(); i++) {
-		
+
 		if (countryName == continentCountries[i]->getName()) {
 			return true;
 		}
@@ -321,7 +321,7 @@ void Map::addContinent(Continent* continentName)
 
 // Returns a vector of all the countries
 vector<Country*> Map::getCountries() {
-	
+
 	vector<Country*> temp;
 
 	for (map<string, Country*>::iterator i = countries.begin(); i != countries.end(); i++) {
@@ -333,7 +333,7 @@ vector<Country*> Map::getCountries() {
 
 // Returns a vector of all the continents
 vector<Continent*> Map::getContinents() {
-	
+
 	vector<Continent*> temp;
 
 	for (std::map<string, Continent*>::iterator i = continents.begin(); i != continents.end(); i++) {
@@ -346,11 +346,11 @@ vector<Continent*> Map::getContinents() {
 // Returns a Country object of a specific name
 Country* Map::getCountry(string countryName)
 {
-		return countries[countryName];
+	return countries[countryName];
 }
 
 // Returns a Continent object of a specific name
-Continent* Map::getContinent(string continentName) 
+Continent* Map::getContinent(string continentName)
 {
 	return continents[continentName];
 }
@@ -361,7 +361,7 @@ vector<Country*>  Map::getCountriesByContinent(string continentName)
 	vector<Country*> tempCountries;
 
 	for (std::map<string, Country*>::iterator i = countries.begin(); i != countries.end(); i++) {
-	
+
 		if (i->second->getContinentName() == continentName) {
 			tempCountries.push_back(i->second);
 		}
@@ -370,7 +370,7 @@ vector<Country*>  Map::getCountriesByContinent(string continentName)
 }
 
 // Validates the Map
-bool Map::toValidate()
+bool Map::validate()
 {
 
 	// Use BFS on the first node to verify that all countries are connected
@@ -380,19 +380,19 @@ bool Map::toValidate()
 	if (allCountries.size() == 0) {
 		return false;
 	}
-		
+
 	for (int i = 0; i < allCountries.size(); i++)
 	{
 		string temp1 = allCountries[i]->getName();
-		
+
 		for (int j = 0; j < allCountries.size(); j++) {
-			
+
 			string temp2 = allCountries[j]->getName();
-			
+
 			if (!toGetTo(temp1, temp2)) {
-				
+
 				cout << "This is not a connected graph." << endl;
-				
+
 				return false;
 			}
 		}
@@ -403,9 +403,9 @@ bool Map::toValidate()
 	// Check if continents are connected subgraphs
 	// by verifying all continents contain at least one country
 	// checking if continent contains a country and all country are connected
-	
+
 	for (map<string, Continent*>::iterator i = continents.begin(); i != continents.end(); i++) {
-		
+
 		if (i->second->numberOfCountry() == 0) {
 			cout << "Continents are not a connected subgraphs." << endl;
 			return false;
@@ -429,7 +429,7 @@ bool Map::toValidate()
 		string temp = allCountries[i]->getName();
 		string tempContinent = allCountries[i]->getContinentName();
 
-		
+
 		for (map<string, Continent*>::iterator j = continents.begin(); j != continents.end(); j++) {
 
 			if (j->second->checkForCountry(temp) && (tempContinent != j->first)) {
@@ -448,7 +448,7 @@ bool Map::toValidate()
 bool Map::toGetTo(string initial, string destination)
 {
 
-	if (initial == destination){
+	if (initial == destination) {
 		return true;
 	}
 
@@ -457,7 +457,7 @@ bool Map::toGetTo(string initial, string destination)
 
 	//initialize them all to false
 	map<string, Country*>::iterator start = countries.begin();
-	
+
 	for (start; start != countries.end(); ++start)
 	{
 		pair<string, bool> flag(start->first, false);
@@ -475,21 +475,20 @@ bool Map::toGetTo(string initial, string destination)
 		queue.pop_front();
 
 		for (auto& i : getCountry(name)->getNeighbors()) {
-			
+
 			if (i->getName() == destination) {
 				return true;
 			}
 
-			if (!visited[i->getName()]){
+			if (!visited[i->getName()]) {
 				visited[i->getName()] = true;
 				queue.push_back(i->getName());
-			}	
+			}
 		}
 	}
 
 	return false;
 
 }
-
 
 
