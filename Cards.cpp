@@ -154,6 +154,9 @@ Deck::Deck() {
 //Deck Generation 
 
 Deck::~Deck() {
+
+    cout << endl << "---------- DELETING DECK -----------" << endl;
+
     delete position;
     position = nullptr;
     while (!deck.empty()) {

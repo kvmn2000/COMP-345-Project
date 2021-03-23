@@ -57,6 +57,7 @@ Player::Player(const Player& copy) {
 
 Player::~Player() {
 
+   cout << endl << "---------- DELETING PLAYER "<<id<<" -----------" << endl;
    delete bidingFacility;
    bidingFacility = NULL;
 }

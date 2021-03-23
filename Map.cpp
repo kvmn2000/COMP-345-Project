@@ -263,7 +263,7 @@ bool Continent::checkForCountry(string countryName)
 // Map Destructor
 Map::~Map()
 {
-	cout << "---------- DELETING MAP -----------" << endl << endl;
+	cout << endl << "---------- DELETING MAP -----------" << endl;
 
 	for (map<string, Continent*>::iterator j = continents.begin(); j != continents.end(); ++j) {
 
