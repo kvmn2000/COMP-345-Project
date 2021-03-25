@@ -6,13 +6,14 @@
 
 
 
-Player::Player(int playerId)
+Player::Player(int playerId, string playerName)
 {
     id = playerId;
+    name = playerName;
 }
 
 //default constructor with parameter
-Player::Player(std::string playerName)
+Player::Player(string playerName)
 {
     name = playerName;
     id = 0;

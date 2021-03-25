@@ -23,7 +23,7 @@ public:
     //below are the constructors 
     Player() = default;
     Player(string name);
-    Player(int playerId);
+    Player(int playerId, string playerName);
     Player(string name, int amountOfPlayer);
     Player(const Player& copy);
     ~Player();

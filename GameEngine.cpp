@@ -11,13 +11,14 @@ GameEngine::GameEngine()
 {
     gameMap = NULL;
     gameDeck = NULL;
-    bidingList = new BidingList();
+    bidinglist = NULL;
     players = {};
 }
 
 GameEngine::GameEngine(const string mapDirectory)
 {
-    bidingList = new BidingList();
+    bidinglist = new BidingList();
+    coinPool = 36;
     gameStart(mapDirectory);
 }
 
@@ -44,6 +45,8 @@ GameEngine& GameEngine::operator=(const GameEngine& copy)
 
 GameEngine::~GameEngine()
 {
+    cout << endl << endl << "----------- DELETING GAME COMPONENTS -----------" << endl << endl;
+
     gameMap->~Map();
     gameMap = NULL;
 
@@ -51,9 +54,9 @@ GameEngine::~GameEngine()
     gameDeck = NULL;
 
     // Need to fix
-    cout << endl << "---------- DELETING BIDING LIST-----------" << endl;
+    cout << "---------- DELETING BIDING LIST -----------" << endl;
     // Need to fix
-    cout << endl << "---------- DELETING PLAYER -----------" << endl;
+    cout << "---------- DELETING PLAYERS -----------" << endl;
    
 
 }
@@ -66,6 +69,17 @@ void GameEngine::gameStart(const string mapDirectory)
     createDeck();
 };
 
+void GameEngine::startUp() {
+    
+    gameDeck->shuffleDeck();
+    topBoard = topBoardGenetor(*gameDeck);
+    displayTopBoard(topBoard);
+    coinDistribution();
+    resourceDistribution();
+    bidingListDisplay();
+   
+}
+
 void GameEngine::createGameMap(const string directory) {
    
     gameMap = maploader.selectMap(directory);
@@ -77,17 +91,21 @@ void GameEngine::createGameMap(const string directory) {
 void GameEngine::createPlayers() {
 
     cout << endl << "---CHOOSING THE NUMBER OF PLAYERS---" << endl;
-    cout << "Select amount of players (2 - 5): " << endl;
+    cout << "Select amount of players (2 - 4): " << endl;
     int numPlayers = getUserInputInteger("Your choice (-1 to quit): ", 2, 6);
     cout << endl;
 
     for (int i = 0; i < numPlayers; i++) {
+        string playerName;
         cout << "Created Player with ID: " << (i + 1) << "." << endl;
-        Player* thePlayer = new Player(i + 1);
+        cout << "Pick a name for player " << (i + 1) << ": ";
+        cin >> playerName;
+        Player* thePlayer = new Player(i + 1, playerName);
         players.push_back(thePlayer);
 
         cout << "Added player to a biding list" << endl;
-        bidingList->addPlayer((thePlayer)->getBidingFacility());
+        BidingFacility* biding = new BidingFacility(thePlayer->getName());
+        bidinglist->addPlayer(biding);
         cout << endl;
     }
 }
@@ -95,7 +113,6 @@ void GameEngine::createPlayers() {
 void GameEngine::createDeck() {
     gameDeck = new Deck();
     cout << endl << "---A DECK HAS BEEN CREATED---" << endl;
-    cout << endl << "---EACH PLAYER HAS ALSO BEEN ASSIGNED A EMPTY HAND---" << endl;
 }
 
 Deck* GameEngine::getDeck()
@@ -113,6 +130,86 @@ Map* GameEngine::getMap()
     return gameMap;
 }
 
+//This generates what cards will be at the top of the board. 
+vector<Cards*> GameEngine::topBoardGenetor(Deck& deck) {
+    auto tb = new std::vector<Cards*>();
+    for (auto i = 0; i < 6; i++) {
+        tb->emplace_back(deck.draw());
+    }
+    return *tb;
+}
+
+//This diplays the availible cards at the top of the board.
+void GameEngine::displayTopBoard(std::vector<Cards*>& topBoard) {
+    
+    cout << endl << "---------- DISPLAYING TOP BOARD -----------" << endl;
+
+    int j = 0;
+    int index = 0;
+    for (auto it = topBoard.begin(); it != topBoard.end(); ++it) {
+        cout << ++j << ") " << posArray[index++] << " Coins - " << **it << endl;
+    }
+}
+
+void GameEngine::coinDistribution(){
+   
+    cout << endl << "----------- DISTRIBUTING COINS TO PLAYERS ------------" << endl;
+
+    switch (players.size()) {
+    
+    case 2:
+        for (int i = 0; i < players.size(); i++) {
+            cout << "Player with ID:" << players[i]->getId() << " will receive 14 coins" << endl;
+            players[i]->setCoins(14);
+            coinPool = coinPool - 14;
+        }
+        break;
+    case 3:
+        for (int i = 0; i < players.size(); i++) {
+            cout << "Player with ID:" << players[i]->getId() << " will receive 11 coins" << endl;
+            players[i]->setCoins(11);
+            coinPool = coinPool - 11;
+        }
+        break;
+    case 4:
+        for (int i = 0; i < players.size(); i++) {
+            cout << "Player with ID:" << players[i]->getId() << " will receive 9 coins" << endl;
+            players[i]->setCoins(9);
+            coinPool = coinPool - 9;
+        }
+        break;
+    default:{}
+
+    }
+}
+
+void GameEngine::bidingListDisplay() {
+
+    cout << endl << "----------- DISTRIBUTING COINS TO PLAYERS ------------" << endl;
+
+    cout << "Bidder wins by highest bidding" << endl;
+    BidingFacility highestbidder = bidinglist->bid();
+ 
+ 
+}
+
+void GameEngine::resourceDistribution() {
+
+    cout << endl << "----------- DISTRIBUTING RESOURCES TO PLAYERS ------------" << endl;
+
+    for (int i = 0; i < players.size(); i++) {
+        cout << "Player with ID " << players[i]->getId() << " will receive 18 armies" << endl;
+        players[i]->setArmies(18);
+    }
+
+    cout << endl;
+
+    for (int i = 0; i < players.size(); i++) {
+        cout << "Player with ID " << players[i]->getId() << " will receive 3 cities" << endl;
+        players[i]->setCities(3);
+    }
+}
+   
 // Helper function for getting user integer input
 int GameEngine::getUserInputInteger(string output, int min, int max) {
     string inputString;

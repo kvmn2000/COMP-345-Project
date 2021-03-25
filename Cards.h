@@ -12,17 +12,18 @@
 
 using namespace std;
 
-class Cards
-{
+class Cards{
 
 private:
-    int* numOfGood;
-    string* good;
-    string* action;
+
+    int numOfGood;
+    string good;
+    string action;
 
 public:
+
     // The constructors
-    Cards();
+    Cards() = default;
     Cards(int numOfGood, string good, string action);
     ~Cards();
 
@@ -40,12 +41,12 @@ public:
     friend ostream& operator<<(ostream& os, const Cards& cards);
 };
 
-class Deck
-{
+class Deck{
 
 private:
-    int* cost;
-    int* position;
+   
+    int cost;
+    int position;
     int posArray[6] = { 0, 1, 1, 2, 2, 3 };
     vector<Cards*> topBoard;
     vector<Cards*> deck;
@@ -64,4 +65,7 @@ public:
     void displayHand(vector<Cards*>& hand);
     void exchange(vector<Cards*>& topBoard, Deck& deck);
     bool payCoin(int cost);
+
+    void shuffleDeck();
 };
+
