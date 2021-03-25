@@ -12,6 +12,7 @@ int main(int argc, const char* argv[]) {
 	
 	const string mapDirectory = "./Maps/";
 	GameEngine* game = new GameEngine(mapDirectory);
-
+	game->startUp();
+	game->~GameEngine();
 	return 0;
 }

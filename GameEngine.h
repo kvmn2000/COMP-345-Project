@@ -32,24 +32,29 @@ public:
     Deck* getDeck();
     vector<Player*> getPlayers();
     Map* getMap();
+    vector<Cards*> topBoardGenetor(Deck& deck);
+    void displayTopBoard(vector<Cards*>& topBoard);
 
     void startUp();
-    void mainLoop();
-    void gameScore();
 
 private:
 
     Map* gameMap;
     Deck* gameDeck;
+    BidingList* bidinglist;
     vector<Player*> players; //vector of all players that has been created
-    BidingList* bidingList;
+    vector<Cards*> topBoard;
     MapLoader maploader;
-
+    int posArray[6] = { 0, 1, 1, 2, 2, 3 };
+    int coinPool;
 
     void gameStart(const string mapDirectory);
     void createPlayers();
     void createGameMap(const string mapDirectory);
     void createDeck();
+    void coinDistribution();
+    void resourceDistribution();
+    void bidingListDisplay();
 
     int getUserInputInteger(string, int, int);
     string getUserInputString(string, string, string);

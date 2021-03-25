@@ -1,12 +1,12 @@
 #include "Cards.h"
-#include <ctime>
-#include <algorithm>
-#include <iostream>
 
-Cards::Cards() {
-    this->numOfGood = nullptr;
-    this->good = nullptr;
-    this->action = nullptr;
+
+
+//Card Constructor
+Cards::Cards(int numOfGood, string good, string action) {
+    this->numOfGood = numOfGood;
+    this->good = good;
+    this->action = action;
 }
 
 ostream& operator<<(ostream& os, const Cards& cards) {
@@ -15,49 +15,38 @@ ostream& operator<<(ostream& os, const Cards& cards) {
 }
 
 Cards::~Cards() {
-    delete good;
-    good = nullptr;
-    delete action;
-    action = nullptr;
-    delete numOfGood;
-    numOfGood = nullptr;
+
 }
 
 //Accessor methods.
 string Cards::getGood() const {
-    return *good;
+    return good;
 }
 
 //Mutator methods.
 void Cards::setGood(string good) {
-    Cards::good = new string(good);
+    this->good = good;
 }
 
 //Accessor methods.
 string Cards::getAction() const {
-    return *action;
+    return action;
 }
 
 //Mutator methods.
 void Cards::setAction(string action) {
-    Cards::action = new string(action);
+    this->action = action;
 }
 
-//Card Constructor
-Cards::Cards(int numOfGood, string good, string action) {
-    Cards::numOfGood = new int(numOfGood);
-    this->good = new string(good);
-    this->action = new string(action);
-}
 
 //Accessor methods.
 int Cards::getNumOfGood() const {
-    return *numOfGood;
+    return numOfGood;
 }
 
 //Mutator methods.
 void Cards::setNumOfGood(int numOfGood) {
-    Cards::numOfGood = new int(numOfGood);
+    this->numOfGood = numOfGood;
 }
 
 //All cards in the deck by good and action
@@ -105,8 +94,11 @@ Cards* cards40 = new Cards(1, "Anvil", "MOVE_OVER_GROUND 4");
 Cards* cards41 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 4");
 Cards* cards42 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 3");
 
+
 Deck::Deck() {
-    position = new int();
+
+ 
+    position = 0;
     deck.push_back(cards01);
     deck.push_back(cards02);
     deck.push_back(cards03);
@@ -155,19 +147,25 @@ Deck::Deck() {
 
 Deck::~Deck() {
 
-    cout << endl << "---------- DELETING DECK -----------" << endl;
-
-    delete position;
-    position = nullptr;
+    cout << "---------- DELETING DECK -----------" << endl;
+   
     while (!deck.empty()) {
         delete deck.back();
         deck.back() = nullptr;
         deck.pop_back();
     }
+
+    while (!deck.empty()) {
+        delete topBoard.back();
+        topBoard.back() = nullptr;
+        topBoard.pop_back();
+    }
+
 }
 
 //The draw method shuffles the deck and draws (returns) the cards for the user. 
 Cards* Deck::draw() {
+
     std::srand(unsigned(std::time(0)));
     std::random_shuffle(deck.begin(), deck.end());
 
@@ -175,6 +173,7 @@ Cards* Deck::draw() {
     deck.pop_back();
 
     return card;
+
 }
 
 //This generates what cards will be at the top of the board. 
@@ -266,4 +265,11 @@ void Deck::exchange(std::vector<Cards*>& topBoard, Deck& deck) {
 bool Deck::payCoin(int cost) {
     cout << "The cost of this card is " << cost << " coins." << endl;
     return true;
+}
+
+void Deck::shuffleDeck() {
+
+    cout << endl << "---------- SHUFFLING DECK -----------" << endl;
+    std::srand(unsigned(std::time(0)));
+    std::random_shuffle(deck.begin(), deck.end());
 }
