@@ -76,6 +76,7 @@ void GameEngine::startUp() {
     displayTopBoard(topBoard);
     coinDistribution();
     resourceDistribution();
+    placingArmy();
     bidingListDisplay();
    
 }
@@ -207,6 +208,18 @@ void GameEngine::resourceDistribution() {
     for (int i = 0; i < players.size(); i++) {
         cout << "Player with ID " << players[i]->getId() << " will receive 3 cities" << endl;
         players[i]->setCities(3);
+    }
+}
+
+void GameEngine::placingArmy() {
+    
+
+    cout << endl << "----------- PLACING PLAYERS ARMY ------------" << endl;
+
+    for (int i = 0; i < players.size() *10; i++) {
+        
+        cout << "Player with ID " << players[(i % players.size())]->getId() << " places 1 army" << endl;
+ 
     }
 }
    
