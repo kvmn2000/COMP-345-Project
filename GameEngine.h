@@ -55,6 +55,7 @@ private:
     void coinDistribution();
     void resourceDistribution();
     void bidingListDisplay();
+    void placingArmy();
 
     int getUserInputInteger(string, int, int);
     string getUserInputString(string, string, string);
