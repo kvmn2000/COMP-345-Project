@@ -5,6 +5,7 @@
 #include "MapLoader.h"
 #include "Cards.h"
 #include "BidingFacility.h"
+#include "GameObserver.h"
 
 
 #include <vector>
@@ -18,7 +19,7 @@
 
 using namespace std;
 
-class GameEngine {
+class GameEngine : public Subject {
 
 public:
 
@@ -36,6 +37,8 @@ public:
     void displayTopBoard(vector<Cards*>& topBoard);
 
     void startUp();
+
+
 
 private:
 
