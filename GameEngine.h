@@ -37,8 +37,10 @@ public:
     void displayTopBoard(Hand& topBoard);
 
     void buyCard();
+    void useCard();
     void endTurn();
 
+    void gameLoop();
     void startUp();
 
 

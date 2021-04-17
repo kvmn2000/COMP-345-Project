@@ -304,10 +304,20 @@ void GameEngine::endTurn() {
 }
 
 void GameEngine::buyCard() {
+    Card* card = nullptr;
+    while (card == nullptr) {
+        cout << "Write a number from 0 to 5 to choose the card you want. " << endl;
+        int index = getUserInputInteger("Choose -1 to quit the game. ", 0, 5);
+        topBoard->exchange(index, players[players_turn]);
+    }
+    players[players_turn]->hand->push_back(card);
+    //will print bought card statement
+    notify(0, 0, 0);
+    useCard();
+}
 
-    int index = getUserInputInteger("Choose -1 if you do not wish to buy a card. ", 0, 5);
-    int* coin = new int(players[players_turn]->getTokens());
-    topBoard->exchange(index, coin);
-    players[players_turn]->setTokens(*coin);
+void GameEngine::useCard() {
+    notify(0, 0, 0);
+    
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "Player.h"
 #include <array>
 #include <string>
 #include <vector>
@@ -79,7 +80,7 @@ public:
     Deck *deck;
     array<Card *, 6> cards;
     explicit Hand(Deck *deck);
-    Card* exchange(int cardIndex, int *coins);
+    Card* exchange(int cardIndex, Player* player);
     int cardCost(int cardIndex);
     void printHand();
 private:
