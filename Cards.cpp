@@ -1,275 +1,423 @@
+
+#include <algorithm>
+#include <chrono>
+#include <random>
+#include <iostream>
 #include "Cards.h"
 
-
-
-//Card Constructor
-Cards::Cards(int numOfGood, string good, string action) {
-    this->numOfGood = numOfGood;
-    this->good = good;
-    this->action = action;
+Action::Action(Action::ActionType type, int count): type(type), count(count) {
 }
 
-ostream& operator<<(ostream& os, const Cards& cards) {
-    os << cards.getGood() << " (" << cards.getNumOfGood() << ") - " << cards.getAction();
-    return os;
+const char * const Action::actions[] = {
+        "Add army",
+        "Move over land",
+        "Move over land and water",
+        "build city",
+        "destroy army"
+};
+
+string Action::getName() {
+    return actions[type];
 }
 
-Cards::~Cards() {
-
+Good::Good(Good::GoodType type, int count): type(type), count(count) {
 }
 
-//Accessor methods.
-string Cards::getGood() const {
-    return good;
-}
+const char * const Good::goods[] = {
+        "Ruby",
+        "Wood",
+        "Carrot",
+        "Anvil",
+        "Ore",
+        "Wild"
+};
 
-//Mutator methods.
-void Cards::setGood(string good) {
-    this->good = good;
-}
-
-//Accessor methods.
-string Cards::getAction() const {
-    return action;
-}
-
-//Mutator methods.
-void Cards::setAction(string action) {
-    this->action = action;
+string Good::getName() {
+    return goods[type];
 }
 
 
-//Accessor methods.
-int Cards::getNumOfGood() const {
-    return numOfGood;
+Card::Card(Good good, Action action): good(good), combinationType(CombinationType::SINGLE) {
+    actions.insert(actions.begin(), action);
 }
 
-//Mutator methods.
-void Cards::setNumOfGood(int numOfGood) {
-    this->numOfGood = numOfGood;
+Card::Card(Good good, CombinationType combinationType, Action primaryAction, Action secondaryAction):
+        good(good),
+        combinationType(combinationType) {
+    actions.insert(actions.begin(), primaryAction);
+    actions.insert(actions.begin(), secondaryAction);
 }
 
-//All cards in the deck by good and action
+string Card::getCombinationType() {
+    switch (combinationType) {
+        case 0: return "SINGLE";
+        case 1: return "OR";
+        case 2: return "AND";
+    }
+}
 
-Cards* cards01 = new Cards(1, "Wild", "MOVE_OVER_WATER 2");
-Cards* cards02 = new Cards(1, "Wild", "MOVE_OVER_WATER 2");
-Cards* cards03 = new Cards(1, "Wild", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards04 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards05 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards06 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 2");
-Cards* cards07 = new Cards(1, "Crystal", "PLACE_NEW_ARMIES_ON_BOARD 1");
-Cards* cards08 = new Cards(1, "Crystal", "MOVE_OVER_GROUND 2");
-Cards* cards09 = new Cards(1, "Rock", "MOVE_OVER_GROUND 2");
-Cards* cards10 = new Cards(1, "Rock", "MOVE_OVER_WATER 2");
-Cards* cards11 = new Cards(1, "Rock", "MOVE_OVER_WATER 2");
-Cards* cards12 = new Cards(1, "Rock", "MOVE_OVER_WATER 3");
-Cards* cards13 = new Cards(1, "Rock", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards14 = new Cards(1, "Rock", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards15 = new Cards(1, "Rock", "PLACE_NEW_ARMIES_ON_BOARD 2 OR BUILD_A_CITY 1");
-Cards* cards16 = new Cards(1, "Carrot", "BUILD_A_CITY 1");
-Cards* cards17 = new Cards(1, "Carrot", "DESTROY_ARMY 1 AND PLACE_NEW_ARMIES_ON_BOARD 1");
-Cards* cards18 = new Cards(1, "Carrot", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards19 = new Cards(1, "Carrot", "MOVE_OVER_GROUND 4");
-Cards* cards20 = new Cards(1, "Carrot", "MOVE_OVER_GROUND 4");
-Cards* cards21 = new Cards(1, "Carrot", "PLACE_NEW_ARMIES_ON_BOARD 4 OR MOVE_OVER_GROUND 2");
-Cards* cards22 = new Cards(1, "Carrot", "MOVE_OVER_GROUND 5");
-Cards* cards23 = new Cards(1, "Carrot", "BUILD_A_CITY 1");
-Cards* cards24 = new Cards(1, "Carrot", "MOVE_OVER_WATER 3");
-Cards* cards25 = new Cards(2, "Carrot", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards26 = new Cards(1, "Tree", "MOVE_OVER_GROUND 5");
-Cards* cards27 = new Cards(1, "Tree", "MOVE_OVER_GROUND 6");
-Cards* cards28 = new Cards(1, "Tree", "PLACE_NEW_ARMIES_ON_BOARD 2 OR MOVE_OVER_GROUND 3");
-Cards* cards29 = new Cards(1, "Tree", "DESTROY_ARMY 1 OR BUILD_A_CITY 1");
-Cards* cards30 = new Cards(1, "Tree", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards31 = new Cards(1, "Tree", "MOVE_OVER_WATER 4");
-Cards* cards32 = new Cards(1, "Tree", "MOVE_OVER_WATER 3");
-Cards* cards33 = new Cards(1, "Tree", "BUILD_A_CITY 1");
-Cards* cards34 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards35 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3");
-Cards* cards36 = new Cards(1, "Anvil", "MOVE_OVER_WATER 3");
-Cards* cards37 = new Cards(1, "Anvil", "BUILD_A_CITY 1");
-Cards* cards38 = new Cards(2, "Anvil", "MOVE_OVER_GROUND 4");
-Cards* cards39 = new Cards(1, "Anvil", "MOVE_OVER_GROUND 5");
-Cards* cards40 = new Cards(1, "Anvil", "MOVE_OVER_GROUND 4");
-Cards* cards41 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 4");
-Cards* cards42 = new Cards(1, "Anvil", "PLACE_NEW_ARMIES_ON_BOARD 3 OR MOVE_OVER_GROUND 3");
-
+void Card::printCard() {
+    cout << "\tGood: " << good.getName() << " (" << good.count << ")" << endl;
+    cout << "\tAction: " << actions[0].getName() << " (" << actions[0].count << ")" << endl;
+    if (actions.size() == 2) {
+        combinationType == 1 ? cout << "\tOR" << endl : cout << "\tAND" << endl;
+        cout << "\tAction: " << actions[1].getName() << " (" << actions[1].count << ")" << endl;
+    }
+}
 
 Deck::Deck() {
-
- 
-    position = 0;
-    deck.push_back(cards01);
-    deck.push_back(cards02);
-    deck.push_back(cards03);
-    deck.push_back(cards04);
-    deck.push_back(cards05);
-    deck.push_back(cards06);
-    deck.push_back(cards07);
-    deck.push_back(cards08);
-    deck.push_back(cards09);
-    deck.push_back(cards10);
-    deck.push_back(cards11);
-    deck.push_back(cards12);
-    deck.push_back(cards13);
-    deck.push_back(cards14);
-    deck.push_back(cards15);
-    deck.push_back(cards16);
-    deck.push_back(cards17);
-    deck.push_back(cards18);
-    deck.push_back(cards19);
-    deck.push_back(cards20);
-    deck.push_back(cards21);
-    deck.push_back(cards22);
-    deck.push_back(cards23);
-    deck.push_back(cards24);
-    deck.push_back(cards25);
-    deck.push_back(cards26);
-    deck.push_back(cards27);
-    deck.push_back(cards28);
-    deck.push_back(cards29);
-    deck.push_back(cards30);
-    deck.push_back(cards31);
-    deck.push_back(cards32);
-    deck.push_back(cards33);
-    deck.push_back(cards34);
-    deck.push_back(cards35);
-    deck.push_back(cards36);
-    deck.push_back(cards37);
-    deck.push_back(cards38);
-    deck.push_back(cards39);
-    deck.push_back(cards40);
-    deck.push_back(cards41);
-    deck.push_back(cards42);
+    topCard = &cards[0];
 }
 
-//Deck Generation 
-
-Deck::~Deck() {
-
-    cout << "---------- DELETING DECK -----------" << endl;
-   
-    while (!deck.empty()) {
-        delete deck.back();
-        deck.back() = nullptr;
-        deck.pop_back();
+Hand::Hand(Deck *deck): deck(deck) {
+    for (int i = 0; i < 6; i++) {
+        cards[i] = deck->draw();
     }
-
-    while (!deck.empty()) {
-        delete topBoard.back();
-        topBoard.back() = nullptr;
-        topBoard.pop_back();
-    }
-
 }
 
-//The draw method shuffles the deck and draws (returns) the cards for the user. 
-Cards* Deck::draw() {
+void Deck::shuffle() {
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(cards.begin(), cards.end(), default_random_engine(seed));
+}
 
-    std::srand(unsigned(std::time(0)));
-    std::random_shuffle(deck.begin(), deck.end());
+Card* Deck::draw() {
+    Card *card = topCard;
+    topCard++;
+    return card;
+}
 
-    auto card = deck.back();
-    deck.pop_back();
+void Deck::printDeck() {
+    for (int i = 0; i < 42; i++) {
+        cout << "Card " << i+1 << endl;
+        cards[i].printCard();
+        cout << endl;
+    }
+}
+
+int Hand::cardCost(int cardIndex) {
+    switch (cardIndex) {
+        case 0: return 0;
+        case 1:
+        case 2: return 1;
+        case 3:
+        case 4: return 2;
+        case 5: return 3;
+        default: return 100; // ensures player can't afford card if index is out of bounds
+    }
+}
+
+void Hand::shiftCards(int index) {
+    for (int i = index; i < 5; i++) {
+        cards[i] = cards[i+1];
+    }
+}
+
+Card* Hand::exchange(int cardIndex, int *coins) {
+    // check if player can afford exchange
+    if (cardCost(cardIndex) > *coins) {
+        return nullptr;
+    }
+
+    // pay the piper
+    *coins = *coins - cardCost(cardIndex);
+
+    // save reference to card
+    Card *card = (cards[cardIndex]);
+
+    // shift cards to new positions
+    shiftCards(cardIndex);
+
+    // draw new card
+    cards[5] = deck->draw();
 
     return card;
-
 }
 
-//This generates what cards will be at the top of the board. 
-std::vector<Cards*> Deck::topBoardGenetor(Deck& deck) {
-    auto tb = new std::vector<Cards*>();
-    for (auto i = 0; i < 6; i++) {
-        tb->emplace_back(deck.draw());
+void Hand::printHand() {
+    for (int i = 0; i < 187; i++) {
+        cout << "*";
     }
-    return *tb;
-}
+    printf("\n|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|\n",
+           cards[0]->good.getName().c_str(), cards[0]->good.count,
+           cards[1]->good.getName().c_str(), cards[1]->good.count,
+           cards[2]->good.getName().c_str(), cards[2]->good.count,
+           cards[3]->good.getName().c_str(), cards[3]->good.count,
+           cards[4]->good.getName().c_str(), cards[4]->good.count,
+           cards[5]->good.getName().c_str(), cards[5]->good.count
+    );
 
-//This diplays the availible cards at the top of the board.
-void Deck::displayTopBoard(std::vector<Cards*>& topBoard) {
-    int j = 0;
-    int index = 0;
-    for (auto it = topBoard.begin(); it != topBoard.end(); ++it) {
-        cout << ++j << ") " << posArray[index++] << " Coins - " << **it << endl;
+    printf("|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|\n",
+           cards[0]->actions[0].getName().c_str(), cards[0]->actions[0].count,
+           cards[1]->actions[0].getName().c_str(), cards[1]->actions[0].count,
+           cards[2]->actions[0].getName().c_str(), cards[2]->actions[0].count,
+           cards[3]->actions[0].getName().c_str(), cards[3]->actions[0].count,
+           cards[4]->actions[0].getName().c_str(), cards[4]->actions[0].count,
+           cards[5]->actions[0].getName().c_str(), cards[5]->actions[0].count
+    );
+
+    printf("|%-30s|%-30s|%-30s|%-30s|%-30s|%-30s|\n",
+           cards[0]->combinationType == 0 ? "" : cards[0]->getCombinationType().c_str(),
+           cards[1]->combinationType == 0 ? "" : cards[1]->getCombinationType().c_str(),
+           cards[2]->combinationType == 0 ? "" : cards[2]->getCombinationType().c_str(),
+           cards[3]->combinationType == 0 ? "" : cards[3]->getCombinationType().c_str(),
+           cards[4]->combinationType == 0 ? "" : cards[4]->getCombinationType().c_str(),
+           cards[5]->combinationType == 0 ? "" : cards[5]->getCombinationType().c_str()
+    );
+
+    printf("|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|%-27s(%-1d)|\n",
+           cards[0]->combinationType == 0 ? "" : cards[0]->actions[1].getName().c_str(),
+           cards[0]->combinationType == 0 ? 0 : cards[0]->actions[1].count,
+           cards[1]->combinationType == 0 ? "" : cards[1]->actions[1].getName().c_str(),
+           cards[1]->combinationType == 0 ? 0 : cards[1]->actions[1].count,
+           cards[2]->combinationType == 0 ? "" : cards[2]->actions[1].getName().c_str(),
+           cards[2]->combinationType == 0 ? 0 : cards[2]->actions[1].count,
+           cards[3]->combinationType == 0 ? "" : cards[3]->actions[1].getName().c_str(),
+           cards[3]->combinationType == 0 ? 0 : cards[3]->actions[1].count,
+           cards[4]->combinationType == 0 ? "" : cards[4]->actions[1].getName().c_str(),
+           cards[4]->combinationType == 0 ? 0 : cards[4]->actions[1].count,
+           cards[5]->combinationType == 0 ? "" : cards[5]->actions[1].getName().c_str(),
+           cards[5]->combinationType == 0 ? 0 : cards[5]->actions[1].count
+    );
+
+    printf("|%-30s|%-30s|%-30s|%-30s|%-30s|%-30s|\n",
+            "Cost: 0", "Cost: 1", "Cost: 1", "Cost: 2", "Cost: 2", "Cost: 3"
+    );
+
+    for (int i = 0; i < 187; i++) {
+        cout << "*";
     }
+    cout << endl;
+
 }
 
-//Updates what cards are at the top of the board. 
-void Deck::updateTopBoard(int& position, std::vector<Cards*>& topBoard, Deck& deck) {
-    int index = position - 1;
-    topBoard.erase(topBoard.begin() + index);
-    cout << "Top Board cards series size is " << topBoard.size() << endl;
-    topBoard.emplace_back(deck.draw());
-    cout << "Top Board cards series size is " << topBoard.size() << endl;
-    displayTopBoard(topBoard);
-}
+void Deck::generateDeck() {
 
-//Generates the user's hand of cards.
-std::vector<Cards*> Deck::handGenetor(Cards*& card) {
-    std::vector<Cards*> hand;
-    hand.emplace_back(card);
-    return hand;
-}
+    // Wood (8 Cards)
+    cards[0] = Card(
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 3)
+    );
 
-//Displays the user's hand of cards. 
-void Deck::displayHand(std::vector<Cards*>& hand) {
-    for (auto it = hand.begin(); it != hand.end(); ++it) {
-        std::cout << ' ' << *it << endl;
-    }
-}
+    cards[1] = Card(
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 3)
+    );
 
-//Here is the echange method to exchange the user's cards. 
-//Eventually we will add a way for players to pay for the card using their coins, right now it shows the cost of the card.
-void Deck::exchange(std::vector<Cards*>& topBoard, Deck& deck) {
-    bool successfullPurchase = false;
-    int cost, position, index;
+    cards[2] = Card( // 5 player card
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 6)
+    );
 
-    // Displays the top board before user purchases a card
-    cout << "Top Board:" << endl;
-    displayTopBoard(topBoard);
+    cards[3] = Card(
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Card::CombinationType::OR,
+            Action(Action::ACTION_DESTROY_ARMY, 1),
+            Action(Action::ActionType::ACTION_BUILD_CITY, 1)
+    );
 
-    // Prompt/Allows the user to purchase a card.
-    cout << "Which card do you want to buy? Please enter an integer from 1 to 6: " << endl;
-    do {
-        cin >> position;
-        if (position < 1 || position > 6) {
-            cout << "Invalid input: " << position << ". Please enter an integer from 1 to 6: " << endl;
-            continue;
-        }
-        if (position == 1) {
-            cost = 0;
-        }
-        else if (position == 2 || position == 3) {
-            cost = 1;
-        }
-        else if (position == 4 || position == 5) {
-            cost = 2;
-        }
-        else if (position == 6) {
-            cost = 3;
-        }
-        successfullPurchase = payCoin(cost);
-    } while (!successfullPurchase);
+    cards[4] = Card(
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Card::CombinationType::OR,
+            Action(Action::ACTION_ADD_ARMY, 2),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 3)
+    );
 
-    // purchase confirmation
-    index = position - 1;
-    cout << "You have bought: " << topBoard.front()->getAction() << endl;
-    // update gamehand and update top board
-    delete topBoard[index];
-    topBoard[index] = nullptr;
-    topBoard.erase(topBoard.begin() + index);
-    topBoard.emplace_back(deck.draw());
-}
+    cards[5] = Card(
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND_OR_WATER, 4)
+    );
 
-//Eventually Players will be made to pay their coins for cards, but right now it just shows the price of the card
-bool Deck::payCoin(int cost) {
-    cout << "The cost of this card is " << cost << " coins." << endl;
-    return true;
-}
+    cards[6] = Card(
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Action(Action::ActionType::ACTION_BUILD_CITY, 1)
+    );
 
-void Deck::shuffleDeck() {
+    cards[7] = Card(
+            Good(Good::GoodType::GOOD_WOOD, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND_OR_WATER, 3)
+    );
 
-    cout << endl << "---------- SHUFFLING DECK -----------" << endl;
-    std::srand(unsigned(std::time(0)));
-    std::random_shuffle(deck.begin(), deck.end());
+    // Carrot (10 Cards)
+    cards[8] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Action(Action::ActionType::ACTION_BUILD_CITY, 1)
+    );
+
+    cards[9] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Card::CombinationType::AND,
+            Action(Action::ACTION_DESTROY_ARMY, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 1)
+    );
+
+    cards[10] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 3)
+    );
+
+    cards[11] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 4)
+    );
+
+    cards[12] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 5)
+    );
+
+    cards[13] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 2),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 3)
+    );
+
+    cards[14] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND_OR_WATER, 3)
+    );
+
+    cards[15] = Card( // 5 player card
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Card::CombinationType::OR,
+            Action(Action::ACTION_ADD_ARMY, 4),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 2)
+    );
+
+    cards[16] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 4)
+    );
+
+    cards[17] = Card(
+            Good(Good::GoodType::GOOD_CARROT, 1),
+            Action(Action::ActionType::ACTION_BUILD_CITY, 1)
+    );
+
+    // ANVIL (9 Cards)
+    cards[18] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 4)
+    );
+
+    cards[19] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Card::CombinationType::OR,
+            Action(Action::ACTION_ADD_ARMY, 3),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 4)
+    );
+
+    cards[20] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 5)
+    );
+
+    cards[21] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 3)
+    );
+
+    cards[22] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 3)
+    );
+
+    cards[23] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND_OR_WATER, 3)
+    );
+
+    cards[24] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Action(Action::ActionType::ACTION_BUILD_CITY, 1)
+    );
+
+    cards[25] = Card( // 5 player card
+            Good(Good::GoodType::GOOD_ANVIL, 2),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 4)
+    );
+
+    cards[26] = Card(
+            Good(Good::GoodType::GOOD_ANVIL, 1),
+            Card::CombinationType::OR,
+            Action(Action::ACTION_ADD_ARMY, 3),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 3)
+    );
+
+    // ORE (7 Cards)
+    cards[27] = Card(
+            Good(Good::GoodType::GOOD_ORE, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 2)
+    );
+
+    cards[28] = Card(
+            Good(Good::GoodType::GOOD_ORE, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND_OR_WATER, 3)
+    );
+
+    cards[29] = Card( // 5 player card
+            Good(Good::GoodType::GOOD_ORE, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND_OR_WATER, 2)
+    );
+
+    cards[30] = Card(
+            Good(Good::GoodType::GOOD_ORE, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND_OR_WATER, 3)
+    );
+
+    cards[31] = Card(
+            Good(Good::GoodType::GOOD_ORE, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 3)
+    );
+
+    cards[32] = Card(
+            Good(Good::GoodType::GOOD_ORE, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 3)
+    );
+
+    cards[33] = Card(
+            Good(Good::GoodType::GOOD_ORE, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 2)
+    );
+
+    // RUBY (5 Cards)
+    cards[34] = Card(
+            Good(Good::GoodType::GOOD_RUBY, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 2)
+    );
+
+    cards[35] = Card(
+            Good(Good::GoodType::GOOD_RUBY, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 2)
+    );
+
+    cards[36] = Card(
+            Good(Good::GoodType::GOOD_RUBY, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 2)
+    );
+
+    cards[37] = Card(
+            Good(Good::GoodType::GOOD_RUBY, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 1)
+    );
+
+    cards[38] = Card( // 5 player card
+            Good(Good::GoodType::GOOD_RUBY, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 2)
+    );
+
+    // WILD (3 Cards)
+    cards[39] = Card(
+            Good(Good::GoodType::GOOD_WILD, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 2)
+    );
+
+    cards[40] = Card(
+            Good(Good::GoodType::GOOD_WILD, 1),
+            Action(Action::ActionType::ACTION_MOVE_OVER_LAND, 2)
+    );
+
+    cards[41] = Card(
+            Good(Good::GoodType::GOOD_WILD, 1),
+            Action(Action::ActionType::ACTION_ADD_ARMY, 2)
+    );
+
 }
