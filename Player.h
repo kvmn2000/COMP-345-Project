@@ -8,15 +8,15 @@ using namespace std;
 struct Score {
     int* continentScore;
     int* regionScore;
-    int goodScore;
+    int* goodScore;
 };
 
 class Player {
 
 public:
     typedef pair<Country, int> countryValue;
-    Map map;
-    PlayerStrategy strategy;
+    Map* map;
+    PlayerStrategy* strategy;
     string* name;
     int* disks;
     int* tokens;
@@ -24,13 +24,13 @@ public:
     int* age;
     Score* score;
     int getTotalScore();
-    BidingFacility bidding;
-    vector<Card>* hand;
+    BidingFacility* bidding;
+    vector<Card*>* hand;
     vector<countryValue>* citiesIn;
     vector<countryValue>* armiesIn;
 
-    Player(Map map, string name, int diskNum, int tokenNum, int armyNum);
-    void setStrategy(PlayerStrategy strategy);
+    Player(Map* map, string name, int diskNum, int tokenNum, int armyNum);
+    void setStrategy(PlayerStrategy* strategy);
     int pickCard(Hand* hand);
     int submitAge();
     bool PayCoin(int coins);
@@ -39,12 +39,12 @@ public:
     bool MoveOverLand(int armiesNum, Country* to, Country* from);
     bool MoveOverWater(int armiesNum, Country* to, Country* from);
     bool BuildCity(Country* country);
-    bool DestroyArmy(Country* country, Player player);
+    bool DestroyArmy(Country* country, Player* player);
     bool Ignore();
     void display();
-    pair<Country, int>* getArmiesInCountry(Country country);
-    pair<Country, int>* getCitiesInCountry(Country country);
-    void armyDestroyed(Country country);
+    pair<Country, int>* getArmiesInCountry(Country* country);
+    pair<Country, int>* getCitiesInCountry(Country* country);
+    void armyDestroyed(Country* country);
     void setDisks(int disk);
     void setTokens(int token);
     void setArmies(int army);

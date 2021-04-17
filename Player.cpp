@@ -15,18 +15,18 @@ Player::Player(Map* map, string playerName, int diskNum, int tokenNum, int armyN
     name = new string(playerName);
 
     citiesIn = new vector<countryValue>;
-    for (auto country : *(map->countries)) {
-        citiesIn->push_back(make_pair(country.first, 0));
+    for (auto country : (map->getCountries())) {
+        citiesIn->push_back(make_pair(*country, 0));
     }
 
     armiesIn = new vector<countryValue>;
-    for (auto country : *(map->countries)) {
-        armiesIn->push_back(make_pair(country.first, 0));
+    for (auto country : (map->getCountries())) {
+        armiesIn->push_back(make_pair(*country, 0));
     }
 
     this->map = map;
 
-    bidding = new BiddingFacility(tokens);
+    bidding = new BidingFacility();
     hand = new vector<Card*>;
 
     age = new int(0);
@@ -87,7 +87,7 @@ bool Player::PlaceNewArmies(int armiesNum, Country* country, bool forceAdd) {
     countryValue* armyIn = getArmiesInCountry(country);
     armyIn->second += armiesNum;
 
-    cout << "Placed " << armiesNum << " new armies in " << *(country->name) << endl;
+    cout << "Placed " << armiesNum << " new armies in " << country->getName() << endl;
     return true;
 
 }
@@ -104,7 +104,7 @@ bool Player::BuildCity(Country* country) {
         *disks -= 1;
         countryValue* cityIn = getCitiesInCountry(country);
         cityIn->second++;
-        cout << "Built a city in " << *(country->name) << endl;
+        cout << "Built a city in " << country->getName() << endl;
         return true;
     }
 
@@ -120,7 +120,7 @@ bool Player::MoveArmies(int armiesNum, Country* to, Country* from) {
     countryValue* armyInFrom = getArmiesInCountry(from);
 
     if (map->isAdjacent(to, from) == -1) {
-        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        cout << to->getName() << " and " << from->getName() << " are not adjacent." << endl;
         return false;
     }
 
@@ -131,7 +131,7 @@ bool Player::MoveArmies(int armiesNum, Country* to, Country* from) {
     else {
         armyInTo->second += armiesNum;
         armyInFrom->second -= armiesNum;
-        cout << "Moved " << armiesNum << " armies from " << *(from->name) << " to " << *(to->name) << endl;
+        cout << "Moved " << armiesNum << " armies from " << from->getName() << " to " << to->getName() << endl;
         return true;
     }
 
@@ -141,11 +141,11 @@ bool Player::MoveOverLand(int armiesNum, Country* to, Country* from) {
 
     int adjacency = map->isAdjacent(to, from);
     if (adjacency == -1) {
-        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        cout << to->getName() << " and " << from->getName() << " are not adjacent." << endl;
         return false;
     }
     if (adjacency == 1) {
-        cout << "You can only move from " << *(from->name) << " to " << *(to->name) << " by water." << endl;
+        cout << "You can only move from " << from->getName() << " to " << to->getName() << " by water." << endl;
         return false;
     }
 
@@ -157,11 +157,11 @@ bool Player::MoveOverWater(int armiesNum, Country* to, Country* from) {
 
     int adjacency = map->isAdjacent(to, from);
     if (adjacency == -1) {
-        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        cout << to->getName() << " and " << from->getName() << " are not adjacent." << endl;
         return false;
     }
     if (adjacency == 0) {
-        cout << "You can only move from " << *(from->name) << " to " << *(to->name) << " by land." << endl;
+        cout << "You can only move from " << from->getName() << " to " << to->getName() << " by land." << endl;
         return false;
     }
 
@@ -174,7 +174,7 @@ bool Player::DestroyArmy(Country* country, Player* player) {
     countryValue* armyIn = getArmiesInCountry(country);
 
     if (armyIn->second > 0) {
-        cout << "Destroyed army of " << *(player->name) << " in " << *(country->name) << endl;
+        cout << "Destroyed army of " << *(player->name) << " in " << country->getName() << endl;
         player->armyDestroyed(country);
         return true;
     }
@@ -199,29 +199,29 @@ void Player::display() {
     cout << "\nArmies in:\t";
     vector<countryValue>::iterator i;
     for (i = (armiesIn)->begin(); i != (armiesIn)->end(); ++i) {
-        cout << "\t" << *(i->first->name) << ": " << i->second;
+        cout << "\t" << i->first.getName() << ": " << i->second;
     }
     cout << "\nCities in:\t";
     vector<countryValue>::iterator t;
     for (t = (citiesIn)->begin(); t != (citiesIn)->end(); ++t) {
-        cout << "\t" << *(t->first->name) << ": " << t->second;
+        cout << "\t" << t->first.getName() << ": " << t->second;
     }
     cout << "\n\n" << endl;
 }
 
-pair<Country*, int>* Player::getArmiesInCountry(Country* country) {
+pair<Country, int>* Player::getArmiesInCountry(Country* country) {
     vector<countryValue>::iterator i;
     for (i = (armiesIn)->begin(); i != (armiesIn)->end(); ++i) {
-        if (i->first == country) {
+        if (i->first == *country) {
             return &(*i);
         }
     }
 }
 
-pair<Country*, int>* Player::getCitiesInCountry(Country* country) {
+pair<Country, int>* Player::getCitiesInCountry(Country* country) {
     vector<countryValue>::iterator i;
     for (i = (citiesIn)->begin(); i != (citiesIn)->end(); ++i) {
-        if (i->first == country) {
+        if (i->first == *country) {
             return &(*i);
         }
     }
@@ -363,16 +363,16 @@ void Player::computeTotalGoodScore() {
     case 0:
         break;
     case 1:
-        (*score->goodScore) += 1;
+        (score->goodScore) += 1;
         break;
     case 2:
-        (*score->goodScore) += 2;
+        (score->goodScore) += 2;
         break;
     case 3:
-        (*score->goodScore) += 3;
+        (score->goodScore) += 3;
         break;
     default: // default handle cases where ruby > 3
-        (*score->goodScore) += 6;
+        (score->goodScore) += 6;
     }
 
     switch (wood) {
@@ -380,17 +380,17 @@ void Player::computeTotalGoodScore() {
         break;
     case 1:
     case 2:
-        (*score->goodScore) += 1;
+        (score->goodScore) += 1;
         break;
     case 3:
     case 4:
-        (*score->goodScore) += 2;
+        (score->goodScore) += 2;
         break;
     case 5:
-        (*score->goodScore) += 3;
+        (score->goodScore) += 3;
         break;
     default: // default handle cases where wood > 5
-        (*score->goodScore) += 6;
+        (score->goodScore) += 6;
 
     }
 
@@ -400,18 +400,18 @@ void Player::computeTotalGoodScore() {
     case 1:
     case 2:
     case 3:
-        (*score->goodScore) += 1;
+        (score->goodScore) += 1;
         break;
     case 4:
     case 5:
-        (*score->goodScore) += 2;
+        (score->goodScore) += 2;
         break;
     case 6:
     case 7:
-        (*score->goodScore) += 3;
+        (score->goodScore) += 3;
         break;
     default: // default handle cases where carrot > 7
-        (*score->goodScore) += 6;
+        (score->goodScore) += 6;
 
     }
 
@@ -420,18 +420,18 @@ void Player::computeTotalGoodScore() {
         break;
     case 1:
     case 2:
-        (*score->goodScore) += 1;
+        (score->goodScore) += 1;
         break;
     case 3:
     case 4:
-        (*score->goodScore) += 2;
+        (score->goodScore) += 2;
         break;
     case 5:
     case 6:
-        (*score->goodScore) += 3;
+        (score->goodScore) += 3;
         break;
     default: // default handle cases where anvil > 6
-        (*score->goodScore) += 6;
+        (score->goodScore) += 6;
     }
 
     switch (ore) {
@@ -439,15 +439,15 @@ void Player::computeTotalGoodScore() {
         break;
     case 1:
     case 2:
-        (*score->goodScore) += 1;
+        (score->goodScore) += 1;
         break;
     case 3:
-        (*score->goodScore) += 2;
+        (score->goodScore) += 2;
         break;
     case 4:
-        (*score->goodScore) += 3;
+        (score->goodScore) += 3;
         break;
     default: // default handle cases where ore > 5
-        (*score->goodScore) += 6;
+        (score->goodScore) += 6;
     }
 }
