@@ -1,3 +1,4 @@
+#pragma once
 #include "GameEngine.h"
 
 #include <algorithm>
@@ -71,9 +72,9 @@ void GameEngine::gameStart(const string mapDirectory)
 
 void GameEngine::startUp() {
     
-    gameDeck->shuffleDeck();
-    topBoard = topBoardGenetor(*gameDeck);
-    displayTopBoard(topBoard);
+    gameDeck->shuffle();
+    topBoard = topBoardGenetor();
+    displayTopBoard(*topBoard);
     coinDistribution();
     resourceDistribution();
     placingArmy();
@@ -113,6 +114,7 @@ void GameEngine::createPlayers() {
 
 void GameEngine::createDeck() {
     gameDeck = new Deck();
+    gameDeck->generateDeck();
     cout << endl << "---A DECK HAS BEEN CREATED---" << endl;
 }
 
@@ -132,24 +134,16 @@ Map* GameEngine::getMap()
 }
 
 //This generates what cards will be at the top of the board. 
-vector<Cards*> GameEngine::topBoardGenetor(Deck& deck) {
-    auto tb = new std::vector<Cards*>();
-    for (auto i = 0; i < 6; i++) {
-        tb->emplace_back(deck.draw());
-    }
-    return *tb;
+Hand* GameEngine::topBoardGenetor() {
+    topBoard = new Hand(gameDeck);
+    return topBoard;
 }
 
 //This diplays the availible cards at the top of the board.
-void GameEngine::displayTopBoard(std::vector<Cards*>& topBoard) {
+void GameEngine::displayTopBoard(Hand& topBoard) {
     
     cout << endl << "---------- DISPLAYING TOP BOARD -----------" << endl;
-
-    int j = 0;
-    int index = 0;
-    for (auto it = topBoard.begin(); it != topBoard.end(); ++it) {
-        cout << ++j << ") " << posArray[index++] << " Coins - " << **it << endl;
-    }
+    topBoard.printHand();
 }
 
 void GameEngine::coinDistribution(){

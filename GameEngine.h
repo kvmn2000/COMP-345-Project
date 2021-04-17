@@ -33,8 +33,8 @@ public:
     Deck* getDeck();
     vector<Player*> getPlayers();
     Map* getMap();
-    vector<Cards*> topBoardGenetor(Deck& deck);
-    void displayTopBoard(vector<Cards*>& topBoard);
+    Hand* topBoardGenetor();
+    void displayTopBoard(Hand& topBoard);
 
     void startUp();
 
@@ -46,7 +46,7 @@ private:
     Deck* gameDeck;
     BidingList* bidinglist;
     vector<Player*> players; //vector of all players that has been created
-    vector<Cards*> topBoard;
+    Hand* topBoard;
     MapLoader maploader;
     int posArray[6] = { 0, 1, 1, 2, 2, 3 };
     int coinPool;
