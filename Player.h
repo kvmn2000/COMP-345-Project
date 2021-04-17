@@ -1,79 +1,53 @@
-#pragma once
-
 #include "Map.h"
-#include "Cards.h"
 #include "BidingFacility.h"
-
-#include <iostream>
-#include <string>
-#include <vector>
-
-#define _DEBUG
-#ifdef _DEBUG
-#define new new( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-#endif
+#include "Cards.h"
+#include "PlayerStrategies.h"
 
 using namespace std;
 
-//declaring classes from other parts
+struct Score {
+    int* continentScore;
+    int* regionScore;
+    int goodScore;
+};
 
 class Player {
 
 public:
-    //below are the constructors 
-    Player() = default;
-    Player(string name);
-    Player(int playerId, string playerName);
-    Player(string name, int amountOfPlayer);
-    Player(const Player& copy);
-    ~Player();
-    Player& operator=(const Player& copy);
-    friend ostream& operator << (ostream& out, const Player& copy);
-    friend istream& operator >> (istream& in, Player& copy);
+    typedef pair<Country, int> countryValue;
+    Map map;
+    PlayerStrategy strategy;
+    string* name;
+    int* disks;
+    int* tokens;
+    int* armies;
+    int* age;
+    Score* score;
+    int getTotalScore();
+    BidingFacility bidding;
+    vector<Card>* hand;
+    vector<countryValue>* citiesIn;
+    vector<countryValue>* armiesIn;
 
-
-    //payCoin method
-    bool payCoin(int cost);
-
-    //other gameplay methods
-    void placeNewArmies();
-    void moveArmies();
-    void moveOverLand();
-    void buildCity();
-    void destroyArmy();
-    bool ignore();
-    void andOrAction();
-    void takeAction();
-
-    //below are the accessors
-    int getArmies();
-    int getCoins();
-    int getCities();
-    string getName();
-    int getId();
-
-
-    //vector<Cards*> getGameHand() const;
-   BidingFacility* getBidingFacility();
-
-    //below are the Mutators
-    void setArmies(int armies);
-    void setCoins(int coins);
-    void setCities(int cities);
-    void setName(string name);
-    void setId(int i);
-
-    //our private constructors
-private:
-
-    int id;
-    int coins;
-    int armies;
-    int cities;
-    string name;
-    //vector <Country*> countryOwned;
-    //vector <Cards*> gameHand;
-   BidingFacility* bidingFacility;
-
-
+    Player(Map map, string name, int diskNum, int tokenNum, int armyNum);
+    void setStrategy(PlayerStrategy strategy);
+    int pickCard(Hand* hand);
+    int submitAge();
+    bool PayCoin(int coins);
+    bool PlaceNewArmies(int armiesNum, Country* country, bool forceAdd);
+    bool MoveArmies(int armiesNum, Country* to, Country* from);
+    bool MoveOverLand(int armiesNum, Country* to, Country* from);
+    bool MoveOverWater(int armiesNum, Country* to, Country* from);
+    bool BuildCity(Country* country);
+    bool DestroyArmy(Country* country, Player player);
+    bool Ignore();
+    void display();
+    pair<Country, int>* getArmiesInCountry(Country country);
+    pair<Country, int>* getCitiesInCountry(Country country);
+    void armyDestroyed(Country country);
+    void setDisks(int disk);
+    void setTokens(int token);
+    void setArmies(int army);
+    void printGoods();
+    void computeTotalGoodScore();
 };

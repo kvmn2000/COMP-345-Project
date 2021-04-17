@@ -1,190 +1,453 @@
+#pragma once
+#include <iostream>
+#include <limits>
 #include "Player.h"
 #include "Map.h"
+#include <iomanip>
 
-#include <string>
-#include <iostream>
+using namespace std;
 
 
+Player::Player(Map* map, string playerName, int diskNum, int tokenNum, int armyNum) {
+    disks = new int(diskNum);
+    tokens = new int(tokenNum);
+    armies = new int(armyNum);
+    name = new string(playerName);
 
-Player::Player(int playerId, string playerName)
-{
-    id = playerId;
-    name = playerName;
-}
-
-//default constructor with parameter
-Player::Player(string playerName)
-{
-    name = playerName;
-    id = 0;
-    cities = 0;
-    armies = 0;
-    coins = 0;
-    bidingFacility = new BidingFacility(playerName);
-
-}
-
-//default constructor with number of players.
-Player::Player(string playerName, int numOfPlayers)
-{
-    name = playerName;
-    id = 0;
-    cities = 0;
-    armies = 0;
-   // bidingFacility = new BidingFacility(playerName);
-
-    //Number of players decides how many coins they will recieve. 2 players = 14 coins, 3=11 coins and so on.
-    switch (numOfPlayers)
-    {
-    case 2:
-        Player::coins = 14;
-        break;
-    case 3:
-        Player::coins = 11;
-        break;
-    case 4:
-        Player::coins = 9;
-        break;
-    case 5:
-        Player::coins = 8;
-        break;
+    citiesIn = new vector<countryValue>;
+    for (auto country : *(map->countries)) {
+        citiesIn->push_back(make_pair(country.first, 0));
     }
 
-}
-//Copy Constructor
-Player::Player(const Player& copy) {
+    armiesIn = new vector<countryValue>;
+    for (auto country : *(map->countries)) {
+        armiesIn->push_back(make_pair(country.first, 0));
+    }
+
+    this->map = map;
+
+    bidding = new BiddingFacility(tokens);
+    hand = new vector<Card*>;
+
+    age = new int(0);
+    score = new Score();
+    score->continentScore = new int(0);
+    score->regionScore = new int(0);
+    score->goodScore = new int(0);
+
+    setStrategy(new HumanStrategy);
 
 }
 
-Player::~Player() {
-
-   cout << endl << "---------- DELETING PLAYER "<<id<<" -----------" << endl;
-   delete bidingFacility;
-   bidingFacility = NULL;
+void Player::setStrategy(PlayerStrategy* playerStrategy) {
+    strategy = playerStrategy;
 }
 
-Player& Player::operator=(const Player& copy)
-{
-    cout << "Creating a Player copy:" << endl;
-    return *(new Player(copy));
+int Player::submitAge() {
+    return (strategy->submitAge());
 }
 
-ostream& operator<<(ostream& out, const Player& copy)
-{
-    out << "Player name is : " << copy.name << endl;
-    return out;
+int Player::pickCard(Hand* hand) {
+    return (strategy->pickCard(hand));
 }
 
-istream& operator>>(istream& in, Player& copy)
-{
-    cout << "Input Player name: ";
-    in >> copy.name;
-    return in;
-}
-
-
-//below are the accessors
-
-int Player::getArmies()
-{ 
-    return armies; 
-}
-
-int Player::getCoins()
-{ return coins; 
-}
-
-int Player::getCities() 
-{ 
-    return cities;
-}
-
-string Player::getName()
-{
-    return name;
-}
-
-int Player::getId() 
-{ 
-    return id; 
-}
-
-
-//std::vector<Cards*> *Player::getGameHand() const { return gameHand; }
-
-BidingFacility* Player::getBidingFacility() {
-    return bidingFacility;
-}
-
-
-//below are the Mutators
-void Player::setId(int id) { this->id = id; }
-
-void Player::setArmies(int armies) { this->armies = armies; }
-
-void Player::setCoins(int coins) { this->coins = coins; }
-
-void Player::setCities(int cities) { this->cities = cities; }
-
-void Player::setName(std::string name) { this->name = name; }
-
-//Here is the PayCoin method. Using if else, we can determine the purchess succession. 
-bool Player::payCoin(int cost)
-{
-    if (coins < cost) {
-        std::cout << "INSUFFICIENT FUNDS" << "\n";
+bool Player::PayCoin(int coins) {
+    if (*tokens < coins) {
+        cout << "Player cannot afford that many coins." << endl;
         return false;
     }
     else {
-        setCoins(coins - cost);
-        std::cout << "Success!!!!! " << name << ", you have " << coins << " coins left." << "\n" << "\n";
+        cout << "Player payed." << endl;
+        *tokens -= coins;
         return true;
     }
 }
 
-void Player::placeNewArmies()
-{
-    /*
-    // below we test to see if the player has sufficienmt armies to place.
-    if (armies == 0) {
-        std::cout << "Error! " << name << "INSUFFICIENT armies." << "\n";
-        return;
+int Player::getTotalScore() {
+    return *score->continentScore + *score->regionScore + *score->goodScore;
+}
+
+bool Player::PlaceNewArmies(int armiesNum, Country* country, bool forceAdd) {
+
+    if (!forceAdd) {
+        if (*armies < armiesNum) {
+            cout << "Player does not have enough armies to place." << endl;
+            return false;
+        }
+        countryValue* cityIn = getCitiesInCountry(country);
+        if (cityIn->first == country) {
+            if (cityIn->second <= 0 && country != map->startingRegion) {
+                cout << "Player does not have cities in that country. Cannot place armies." << endl;
+                return false;
+            }
+        }
+        *armies -= armiesNum;
     }
 
-    int disposableArmies;
-    std::string regionName;
-    std::vector<std::string> placementRegions;
+    countryValue* armyIn = getArmiesInCountry(country);
+    armyIn->second += armiesNum;
 
-    // place remainding armies if the player cannot fufill ard value.
-    if (totalArmies > armies) {
-        disposableArmies = armies;
+    cout << "Placed " << armiesNum << " new armies in " << *(country->name) << endl;
+    return true;
+
+}
+
+bool Player::BuildCity(Country* country) {
+    if (*disks < 1) {
+        cout << "Not enough disks." << endl;
+        return false;
+    }
+
+    countryValue* armyIn = getArmiesInCountry(country);
+
+    if (armyIn->second > 0) {
+        *disks -= 1;
+        countryValue* cityIn = getCitiesInCountry(country);
+        cityIn->second++;
+        cout << "Built a city in " << *(country->name) << endl;
+        return true;
+    }
+
+    else {
+        cout << "Cannot build a city where player has no armies." << endl;
+    }
+
+    return false;
+}
+
+bool Player::MoveArmies(int armiesNum, Country* to, Country* from) {
+    countryValue* armyInTo = getArmiesInCountry(to);
+    countryValue* armyInFrom = getArmiesInCountry(from);
+
+    if (map->isAdjacent(to, from) == -1) {
+        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        return false;
+    }
+
+    if (armyInFrom->second < armiesNum) {
+        cout << "Not enough armies to move." << endl;
+        return false; //there are not enough to country to move
     }
     else {
-        disposableArmies = totalArmies;
+        armyInTo->second += armiesNum;
+        armyInFrom->second -= armiesNum;
+        cout << "Moved " << armiesNum << " armies from " << *(from->name) << " to " << *(to->name) << endl;
+        return true;
     }
-    */
+
 }
 
-void Player::buildCity()
-{
-    // Veryify players cities and if they can place them.
-    if (cities == 0) {
-        std::cout << "ERRROR " << name << "INSUFFICIENT cities." << "\n";
-        return;
+bool Player::MoveOverLand(int armiesNum, Country* to, Country* from) {
+
+    int adjacency = map->isAdjacent(to, from);
+    if (adjacency == -1) {
+        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        return false;
+    }
+    if (adjacency == 1) {
+        cout << "You can only move from " << *(from->name) << " to " << *(to->name) << " by water." << endl;
+        return false;
+    }
+
+    return MoveArmies(armiesNum, to, from);
+
+}
+
+bool Player::MoveOverWater(int armiesNum, Country* to, Country* from) {
+
+    int adjacency = map->isAdjacent(to, from);
+    if (adjacency == -1) {
+        cout << *(to->name) << " and " << *(from->name) << " are not adjacent." << endl;
+        return false;
+    }
+    if (adjacency == 0) {
+        cout << "You can only move from " << *(from->name) << " to " << *(to->name) << " by land." << endl;
+        return false;
+    }
+
+    return MoveArmies(armiesNum, to, from);
+
+}
+
+bool Player::DestroyArmy(Country* country, Player* player) {
+
+    countryValue* armyIn = getArmiesInCountry(country);
+
+    if (armyIn->second > 0) {
+        cout << "Destroyed army of " << *(player->name) << " in " << *(country->name) << endl;
+        player->armyDestroyed(country);
+        return true;
+    }
+
+    else {
+        cout << "Cannot destroy an army of another player where player has no armies." << endl;
+    }
+
+    return false;
+
+}
+
+bool Player::Ignore() {
+    return false;
+}
+
+void Player::display() {
+    cout << "\n----------- " << *name << " ---------------------------------" << endl;
+    cout << left << setw(10) << "Disks: " << *disks << endl;
+    cout << left << setw(10) << "Tokens: " << *tokens << endl;
+    cout << left << setw(10) << "Armies: " << *armies << endl;
+    cout << "\nArmies in:\t";
+    vector<countryValue>::iterator i;
+    for (i = (armiesIn)->begin(); i != (armiesIn)->end(); ++i) {
+        cout << "\t" << *(i->first->name) << ": " << i->second;
+    }
+    cout << "\nCities in:\t";
+    vector<countryValue>::iterator t;
+    for (t = (citiesIn)->begin(); t != (citiesIn)->end(); ++t) {
+        cout << "\t" << *(t->first->name) << ": " << t->second;
+    }
+    cout << "\n\n" << endl;
+}
+
+pair<Country*, int>* Player::getArmiesInCountry(Country* country) {
+    vector<countryValue>::iterator i;
+    for (i = (armiesIn)->begin(); i != (armiesIn)->end(); ++i) {
+        if (i->first == country) {
+            return &(*i);
+        }
     }
 }
 
-//below is the method that enables the player to destroy the army of an opponent
-void Player::destroyArmy()
-{
-    /*
-        std::string playerName;
-        std::string regionName;
-        bool invalidPlayerName = false;
-
-        gameBoard.destroyArmy(regionName, playerName);
-        std::cout << "SUCCESS!!! Please removed one of " << playerName << "'s armies from " << regionName<< "\n";
-    */
+pair<Country*, int>* Player::getCitiesInCountry(Country* country) {
+    vector<countryValue>::iterator i;
+    for (i = (citiesIn)->begin(); i != (citiesIn)->end(); ++i) {
+        if (i->first == country) {
+            return &(*i);
+        }
+    }
 }
-//Note*** a vector? will be implemented later on to represent which cards the player has in hand. 
 
+void Player::armyDestroyed(Country* country) {
+    countryValue* armyIn = getArmiesInCountry(country);
+    if (armyIn->second > 0) {
+        *armies += 1;
+        armyIn->second--;
+    }
+    else {
+        cout << "There are no armies from this player in this country." << endl;
+    }
+}
+
+void Player::setDisks(int disk) {
+    *disks = disk;
+}
+
+void Player::setTokens(int token) {
+    *tokens = token;
+}
+
+void Player::setArmies(int army) {
+    *armies = army;
+}
+
+void Player::printGoods() {
+    int ruby = 0;
+    int wood = 0;
+    int carrot = 0;
+    int anvil = 0;
+    int ore = 0;
+    int wild = 0;
+
+    for (auto card : *hand) {
+        switch (card->good.type) {
+        case Good::GoodType::GOOD_RUBY:
+            ruby += card->good.count;
+            break;
+        case Good::GoodType::GOOD_WOOD:
+            wood += card->good.count;
+            break;
+        case Good::GoodType::GOOD_CARROT:
+            carrot += card->good.count;
+            break;
+        case Good::GoodType::GOOD_ANVIL:
+            anvil += card->good.count;
+            break;
+        case Good::GoodType::GOOD_ORE:
+            ore += card->good.count;
+            break;
+        case Good::GoodType::GOOD_WILD:
+            wild += card->good.count;
+            break;
+        }
+    }
+
+    cout << "\tYou have the following goods:" << endl;
+    cout << "\tRuby: " << ruby << endl;
+    cout << "\tWood: " << wood << endl;
+    cout << "\tCarrot: " << carrot << endl;
+    cout << "\tAnvil: " << anvil << endl;
+    cout << "\tOre: " << ore << endl;
+    cout << "\tWild: " << wild << endl;
+
+
+}
+
+void Player::computeTotalGoodScore() {
+    int ruby = 0;
+    int wood = 0;
+    int carrot = 0;
+    int anvil = 0;
+    int ore = 0;
+    int wild = 0;
+
+    for (auto card : *hand) {
+        switch (card->good.type) {
+        case Good::GoodType::GOOD_RUBY:
+            ruby += card->good.count;
+            break;
+        case Good::GoodType::GOOD_WOOD:
+            wood += card->good.count;
+            break;
+        case Good::GoodType::GOOD_CARROT:
+            carrot += card->good.count;
+            break;
+        case Good::GoodType::GOOD_ANVIL:
+            anvil += card->good.count;
+            break;
+        case Good::GoodType::GOOD_ORE:
+            ore += card->good.count;
+            break;
+        case Good::GoodType::GOOD_WILD:
+            wild += card->good.count;
+            break;
+        }
+    }
+
+    if (wild > 0) {
+        cout << endl;
+        cout << *name << ", You have " << wild << " wildcards, please assign your wildcards" << endl;
+        cout << "Goodlist: ruby, wood, carrot, anvil, ore" << endl;
+        while (wild > 0) {
+            string good;
+            cout << "Enter a good type: ";
+            cin >> good;
+
+            if (good == "ruby") {
+                ruby++;
+                wild--;
+            }
+
+            if (good == "wood") {
+                wood++;
+                wild--;
+            }
+
+            if (good == "carrot") {
+                carrot++;
+                wild--;
+            }
+
+            if (good == "anvil") {
+                anvil++;
+                wild--;
+            }
+
+            if (good == "ore") {
+                ore++;
+                wild--;
+            }
+        }
+    }
+
+    switch (ruby) {
+    case 0:
+        break;
+    case 1:
+        (*score->goodScore) += 1;
+        break;
+    case 2:
+        (*score->goodScore) += 2;
+        break;
+    case 3:
+        (*score->goodScore) += 3;
+        break;
+    default: // default handle cases where ruby > 3
+        (*score->goodScore) += 6;
+    }
+
+    switch (wood) {
+    case 0:
+        break;
+    case 1:
+    case 2:
+        (*score->goodScore) += 1;
+        break;
+    case 3:
+    case 4:
+        (*score->goodScore) += 2;
+        break;
+    case 5:
+        (*score->goodScore) += 3;
+        break;
+    default: // default handle cases where wood > 5
+        (*score->goodScore) += 6;
+
+    }
+
+    switch (carrot) {
+    case 0:
+        break;
+    case 1:
+    case 2:
+    case 3:
+        (*score->goodScore) += 1;
+        break;
+    case 4:
+    case 5:
+        (*score->goodScore) += 2;
+        break;
+    case 6:
+    case 7:
+        (*score->goodScore) += 3;
+        break;
+    default: // default handle cases where carrot > 7
+        (*score->goodScore) += 6;
+
+    }
+
+    switch (anvil) {
+    case 0:
+        break;
+    case 1:
+    case 2:
+        (*score->goodScore) += 1;
+        break;
+    case 3:
+    case 4:
+        (*score->goodScore) += 2;
+        break;
+    case 5:
+    case 6:
+        (*score->goodScore) += 3;
+        break;
+    default: // default handle cases where anvil > 6
+        (*score->goodScore) += 6;
+    }
+
+    switch (ore) {
+    case 0:
+        break;
+    case 1:
+    case 2:
+        (*score->goodScore) += 1;
+        break;
+    case 3:
+        (*score->goodScore) += 2;
+        break;
+    case 4:
+        (*score->goodScore) += 3;
+        break;
+    default: // default handle cases where ore > 5
+        (*score->goodScore) += 6;
+    }
+}
