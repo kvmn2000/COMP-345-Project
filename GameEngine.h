@@ -36,6 +36,9 @@ public:
     Hand* topBoardGenetor();
     void displayTopBoard(Hand& topBoard);
 
+    void buyCard();
+    void endTurn();
+
     void startUp();
 
 
@@ -46,6 +49,8 @@ private:
     Deck* gameDeck;
     BidingList* bidinglist;
     vector<Player*> players; //vector of all players that has been created
+    int players_turn = 1;
+    int turn = 0;
     Hand* topBoard;
     MapLoader maploader;
     int posArray[6] = { 0, 1, 1, 2, 2, 3 };

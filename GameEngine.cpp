@@ -102,7 +102,7 @@ void GameEngine::createPlayers() {
         cout << "Created Player with ID: " << (i + 1) << "." << endl;
         cout << "Pick a name for player " << (i + 1) << ": ";
         cin >> playerName;
-        Player* thePlayer = new Player(i + 1, playerName);
+        Player* thePlayer = new Player(gameMap, playerName, 0, 0, 0);
         players.push_back(thePlayer);
 
         cout << "Added player to a biding list" << endl;
@@ -154,22 +154,22 @@ void GameEngine::coinDistribution(){
     
     case 2:
         for (int i = 0; i < players.size(); i++) {
-            cout << "Player with ID:" << players[i]->getId() << " will receive 14 coins" << endl;
-            players[i]->setCoins(14);
+            cout << players[i]->getName() << " will receive 14 coins" << endl;
+            players[i]->setTokens(14);
             coinPool = coinPool - 14;
         }
         break;
     case 3:
         for (int i = 0; i < players.size(); i++) {
-            cout << "Player with ID:" << players[i]->getId() << " will receive 11 coins" << endl;
-            players[i]->setCoins(11);
+            cout << players[i]->getName() << " will receive 11 coins" << endl;
+            players[i]->setTokens(11);
             coinPool = coinPool - 11;
         }
         break;
     case 4:
         for (int i = 0; i < players.size(); i++) {
-            cout << "Player with ID:" << players[i]->getId() << " will receive 9 coins" << endl;
-            players[i]->setCoins(9);
+            cout << players[i]->getName() << " will receive 9 coins" << endl;
+            players[i]->setTokens(9);
             coinPool = coinPool - 9;
         }
         break;
@@ -193,15 +193,15 @@ void GameEngine::resourceDistribution() {
     cout << endl << "----------- DISTRIBUTING RESOURCES TO PLAYERS ------------" << endl;
 
     for (int i = 0; i < players.size(); i++) {
-        cout << "Player with ID " << players[i]->getId() << " will receive 18 armies" << endl;
+        cout << players[i]->getName() << " will receive 18 armies" << endl;
         players[i]->setArmies(18);
     }
 
     cout << endl;
 
     for (int i = 0; i < players.size(); i++) {
-        cout << "Player with ID " << players[i]->getId() << " will receive 3 cities" << endl;
-        players[i]->setCities(3);
+        cout << players[i]->getName() << " will receive 3 cities" << endl;
+        //players[i]->BuildCity(); //build city on starting region? which country do they build their city on
     }
 }
 
@@ -212,7 +212,7 @@ void GameEngine::placingArmy() {
 
     for (int i = 0; i < players.size() *10; i++) {
         
-        cout << "Player with ID " << players[(i % players.size())]->getId() << " places 1 army" << endl;
+        cout << players[(i % players.size())]->getName() << " places 1 army" << endl;
  
     }
 }
@@ -293,4 +293,21 @@ string GameEngine::getUserInputString(string output, string choice1, string choi
     return input;
 }
 
+void GameEngine::endTurn() {
+    if (players_turn == players.size()) {
+        players_turn = 1;
+    }
+    else {
+        players_turn++;
+    }
+    turn++;
+}
+
+void GameEngine::buyCard() {
+
+    int index = getUserInputInteger("Choose -1 if you do not wish to buy a card. ", 0, 5);
+    int* coin = new int(players[players_turn]->getTokens());
+    topBoard->exchange(index, coin);
+    players[players_turn]->setTokens(*coin);
+}
 
