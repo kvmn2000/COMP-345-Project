@@ -19,6 +19,8 @@
 
 using namespace std;
 
+class Player;
+
 class GameEngine : public Subject {
 
 public:

@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <limits>
 #include "Player.h"
@@ -31,25 +30,27 @@ Player::Player(Map* map, string playerName, int diskNum, int tokenNum, int armyN
 
     age = new int(0);
     score = new Score();
-    score->continentScore = new int(0);
-    score->regionScore = new int(0);
-    score->goodScore = new int(0);
-
-    setStrategy(new HumanStrategy);
+    //setStrategy(new HumanStrategy);
 
 }
 
-void Player::setStrategy(PlayerStrategy* playerStrategy) {
-    strategy = playerStrategy;
+Score::Score() {
+    continentScore = new int(0);
+    regionScore = new int(0);
+    goodScore = new int(0);
 }
 
-int Player::submitAge() {
-    return (strategy->submitAge());
-}
+//void Player::setStrategy(PlayerStrategy* playerStrategy) {
+//    strategy = playerStrategy;
+//}
 
-int Player::pickCard(Hand* hand) {
-    return (strategy->pickCard(hand));
-}
+//int Player::submitAge() {
+//    return (strategy->submitAge());
+//}
+//
+//int Player::pickCard(Hand* hand) {
+//    return (strategy->pickCard(hand));
+//}
 
 bool Player::PayCoin(int coins) {
     if (*tokens < coins) {
