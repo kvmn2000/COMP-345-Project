@@ -1,5 +1,3 @@
-#pragma once
-
 #include "PlayerStrategies.h"
 #include <iostream>
 #include <limits>
