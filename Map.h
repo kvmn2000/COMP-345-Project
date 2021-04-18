@@ -23,6 +23,7 @@ public:
 	~Country();
 
 	Country& operator=(const Country& copy);
+	bool operator==(const Country& copy);
 	friend ostream& operator << (ostream& out, const Country& copy);
 	friend istream& operator >> (istream& in, Country& copy);
 
@@ -39,7 +40,7 @@ public:
 	int getNeighborAmount();
 	vector<Country*> getNeighbors();
 	vector<string> getNeighborsName();
-
+	int isAdjacent(Country* from);
 
 private:
 	string name;
@@ -100,7 +101,7 @@ public:
 	vector<Continent*> getContinents();
 	vector<Country*> getCountriesByContinent(string continentName);
 	bool validate();
-	int isAdjacent(Country* from, Country* to);
+	Country* startingRegion;
 
 private:
 	map<string, Country*> countries;

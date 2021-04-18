@@ -2,7 +2,7 @@
 #include "Map.h"
 #include "BidingFacility.h"
 #include "Cards.h"
-//#include "PlayerStrategies.h"
+#include "PlayerStrategies.h"
 #include <iostream>
 
 using namespace std;
@@ -14,7 +14,8 @@ class Player {
 public:
     typedef pair<Country, int> countryValue;
     Map* map;
-    //PlayerStrategy* strategy;
+    Country* startingRegion;
+    PlayerStrategy* strategy;
     string* name;
     int* disks;
     int* tokens;
@@ -30,7 +31,7 @@ public:
     int getTokens() { return *tokens; };
 
     Player(Map* map, string name, int diskNum, int tokenNum, int armyNum);
-    //void setStrategy(PlayerStrategy* strategy);
+    void setStrategy(PlayerStrategy* strategy);
     int pickCard(Hand* hand);
     int submitAge();
     bool PayCoin(int coins);
