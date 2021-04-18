@@ -79,7 +79,14 @@ void GameEngine::startUp() {
     resourceDistribution();
     placingArmy();
     bidingListDisplay();
-   
+    gameLoop();
+}
+
+void GameEngine::gameLoop() {
+    while (turn < 20) {
+        buyCard();
+        endTurn();
+    }
 }
 
 void GameEngine::createGameMap(const string directory) {
@@ -304,20 +311,68 @@ void GameEngine::endTurn() {
 }
 
 void GameEngine::buyCard() {
+    displayTopBoard(*topBoard);
     Card* card = nullptr;
+    int index = 0;
     while (card == nullptr) {
         cout << "Write a number from 0 to 5 to choose the card you want. " << endl;
-        int index = getUserInputInteger("Choose -1 to quit the game. ", 0, 5);
-        topBoard->exchange(index, players[players_turn]);
+        index = getUserInputInteger("Choose -1 to quit the game. ", 0, 5);
+        card = topBoard->exchange(index, players[players_turn]);
+        
     }
-    players[players_turn]->hand->push_back(card);
     //will print bought card statement
-    notify(0, 0, 0);
-    useCard();
+    notify(-1, index, topBoard->cardCost(index));
+    useCard(*card);
 }
 
-void GameEngine::useCard() {
-    notify(0, 0, 0);
-    
+void GameEngine::useCard(Card& card) {
+    Card::CombinationType comboType = card.combinationType;
+    vector<Action> actionsTaken;
+
+    cout << "Using Card:" << endl;
+    switch (comboType) {
+    case Card::OR:
+        cout << "Write a numbers 1 or 2 to choose between the 2 actions: " << endl;
+        int input;
+        card.printCard();
+        cin >> input;
+        actionsTaken.push_back(card.actions[input]);
+        break;
+    case Card::SINGLE:
+        actionsTaken.push_back(card.actions[0]);
+        break;
+    case Card::AND:
+        actionsTaken.push_back(card.actions[0]);
+        actionsTaken.push_back(card.actions[1]);
+        break;
+    }
+
+    while (!actionsTaken.empty()) {
+        int code = 0;
+        switch (actionsTaken.back().type) {
+        case Action::ACTION_ADD_ARMY:
+            //add army
+            code = 0;
+            break;
+        case Action::ACTION_BUILD_CITY:
+            //players[players_turn]->BuildCity();
+            code = 1;
+            break;
+        case Action::ACTION_DESTROY_ARMY:
+            code = 2;
+            //players[players_turn]->DestroyArmy();
+            break;
+        case Action::ACTION_MOVE_OVER_LAND:
+            code = 3;
+            //players[players_turn]->MoveOverLand();
+            break;
+        case Action::ACTION_MOVE_OVER_LAND_OR_WATER:
+            code = 4;
+            //players[players_turn]->MoveOverLand();
+            break;
+        }
+        actionsTaken.pop_back();
+        notify(code, 0, 0);
+    }
 }
 
