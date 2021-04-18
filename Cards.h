@@ -1,10 +1,11 @@
 #pragma once
-#include "Player.h"
 #include <array>
 #include <string>
 #include <vector>
 
 using namespace std;
+
+class Player;
 
 struct Action {
     static const char * const actions[];

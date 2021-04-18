@@ -4,6 +4,7 @@
 #include <random>
 #include <iostream>
 #include "Cards.h"
+#include "Player.h"
 
 Action::Action(Action::ActionType type, int count): type(type), count(count) {
 }

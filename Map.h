@@ -1,7 +1,4 @@
 #pragma once
-
-#include "Player.h"
-
 #include <vector>
 #include <string>
 #include <iostream>
@@ -103,7 +100,7 @@ public:
 	vector<Continent*> getContinents();
 	vector<Country*> getCountriesByContinent(string continentName);
 	bool validate();
-
+	int isAdjacent(Country* from, Country* to);
 
 private:
 	map<string, Country*> countries;

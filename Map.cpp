@@ -491,4 +491,24 @@ bool Map::toGetTo(string initial, string destination)
 
 }
 
+//int Map::isAdjacent(Country* from, Country* to)
+//{
+//	vector<country>::iterator i;
+//	for (i = (countries)->begin(); i != (countries)->end(); ++i) {
+//		if (i->first == to) {
+//			vector<adjacency>::iterator t;
+//			for (t = (i->second).begin(); t != (i->second).end(); ++t) {
+//				if (t->first == from) {
+//					if (t->second == 0)
+//						return 0;
+//					if (t->second == 1)
+//						return 1;
+//				}
+//			}
+//		}
+//	}
+//
+//	return -1;
+//}
+
 
