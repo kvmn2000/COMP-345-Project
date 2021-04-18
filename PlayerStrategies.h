@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Cards.h"
 
 class PlayerStrategy {
