@@ -30,7 +30,7 @@ Player::Player(Map* map, string playerName, int diskNum, int tokenNum, int armyN
 
     age = new int(0);
     score = new Score();
-    //setStrategy(new HumanStrategy);
+    setStrategy(new HumanStrategy);
 
 }
 
@@ -40,17 +40,17 @@ Score::Score() {
     goodScore = new int(0);
 }
 
-//void Player::setStrategy(PlayerStrategy* playerStrategy) {
-//    strategy = playerStrategy;
-//}
+void Player::setStrategy(PlayerStrategy* playerStrategy) {
+    strategy = playerStrategy;
+}
 
-//int Player::submitAge() {
-//    return (strategy->submitAge());
-//}
-//
-//int Player::pickCard(Hand* hand) {
-//    return (strategy->pickCard(hand));
-//}
+int Player::submitAge() {
+    return (strategy->submitAge());
+}
+
+int Player::pickCard(Hand* hand) {
+    return (strategy->pickCard(hand));
+}
 
 bool Player::PayCoin(int coins) {
     if (*tokens < coins) {
@@ -76,7 +76,7 @@ bool Player::PlaceNewArmies(int armiesNum, Country* country, bool forceAdd) {
             return false;
         }
         countryValue* cityIn = getCitiesInCountry(country);
-        if (cityIn->first == country) {
+        if (cityIn->first == *country) {
             if (cityIn->second <= 0 && country != map->startingRegion) {
                 cout << "Player does not have cities in that country. Cannot place armies." << endl;
                 return false;
@@ -120,7 +120,7 @@ bool Player::MoveArmies(int armiesNum, Country* to, Country* from) {
     countryValue* armyInTo = getArmiesInCountry(to);
     countryValue* armyInFrom = getArmiesInCountry(from);
 
-    if (map->isAdjacent(to, from) == -1) {
+    if (to->isAdjacent(from) == -1) {
         cout << to->getName() << " and " << from->getName() << " are not adjacent." << endl;
         return false;
     }
@@ -140,7 +140,7 @@ bool Player::MoveArmies(int armiesNum, Country* to, Country* from) {
 
 bool Player::MoveOverLand(int armiesNum, Country* to, Country* from) {
 
-    int adjacency = map->isAdjacent(to, from);
+    int adjacency = to->isAdjacent(from);
     if (adjacency == -1) {
         cout << to->getName() << " and " << from->getName() << " are not adjacent." << endl;
         return false;
@@ -156,7 +156,8 @@ bool Player::MoveOverLand(int armiesNum, Country* to, Country* from) {
 
 bool Player::MoveOverWater(int armiesNum, Country* to, Country* from) {
 
-    int adjacency = map->isAdjacent(to, from);
+    int adjacency = to->isAdjacent(from);
+
     if (adjacency == -1) {
         cout << to->getName() << " and " << from->getName() << " are not adjacent." << endl;
         return false;

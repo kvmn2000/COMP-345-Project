@@ -66,6 +66,10 @@ Country& Country::operator=(const Country& copy)
 	return *(new Country(copy));
 }
 
+bool Country::operator==(const Country& copy) {
+	return name == copy.name && continentName == copy.name && owner == copy.owner && armie == copy.armie && neighbors == copy.neighbors;
+}
+
 ostream& operator<<(ostream& out, const Country& copy)
 {
 	out << "Country name: " << copy.name << endl;
@@ -155,7 +159,15 @@ vector<string> Country::getNeighborsName()
 	return neighborsName;
 }
 
-
+int Country::isAdjacent(Country* from) {
+	vector<string> neighbours = getNeighborsName();
+	for (string str : neighbours) {
+		if (str == from->getName()) {
+			return (getContinentName()==from->getContinentName()) ? 0 : 1;
+		}
+	}
+	return -1;
+}
 
 
 /*
@@ -310,6 +322,7 @@ int Map::continentCount() {
 // Add Country object to Map
 void Map::addCountry(Country* countryName)
 {
+	if (countries.empty()) { startingRegion = countryName; }
 	countries[countryName->getName()] = countryName;
 };
 
@@ -490,25 +503,5 @@ bool Map::toGetTo(string initial, string destination)
 	return false;
 
 }
-
-//int Map::isAdjacent(Country* from, Country* to)
-//{
-//	vector<country>::iterator i;
-//	for (i = (countries)->begin(); i != (countries)->end(); ++i) {
-//		if (i->first == to) {
-//			vector<adjacency>::iterator t;
-//			for (t = (i->second).begin(); t != (i->second).end(); ++t) {
-//				if (t->first == from) {
-//					if (t->second == 0)
-//						return 0;
-//					if (t->second == 1)
-//						return 1;
-//				}
-//			}
-//		}
-//	}
-//
-//	return -1;
-//}
 
 
