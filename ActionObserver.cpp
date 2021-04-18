@@ -2,6 +2,19 @@
 #include <iostream>
 using namespace std;
 
+ActionObserver::ActionObserver() {
+}
+
+ActionObserver::ActionObserver(GameEngine* game) {
+	gameEngine = game;
+	game->attach(this);
+}
+
+ActionObserver::~ActionObserver() {
+	gameEngine->detach(this);
+	gameEngine = nullptr;
+}
+
 void ActionObserver::update(int code, int type, int num) {
 	switch (code) {
 	case -1:
