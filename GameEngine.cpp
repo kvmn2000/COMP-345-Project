@@ -84,6 +84,7 @@ void GameEngine::startUp() {
 
 void GameEngine::gameLoop() {
     while (turn < 20) {
+        cout << "\n\n\n" << players[players_turn]->getName() << "'s Turn:" << endl;
         buyCard();
         endTurn();
     }
@@ -208,7 +209,7 @@ void GameEngine::resourceDistribution() {
 
     for (int i = 0; i < players.size(); i++) {
         cout << players[i]->getName() << " will receive 3 cities" << endl;
-        //players[i]->BuildCity(); //build city on starting region? which country do they build their city on
+        players[i]->setDisks(3);
     }
 }
 
@@ -221,6 +222,11 @@ void GameEngine::placingArmy() {
         
         cout << players[(i % players.size())]->getName() << " places 1 army at "<< gameMap->startingRegion->getName() << endl;
         players[(i % players.size())]->PlaceNewArmies(1, gameMap->startingRegion, true);
+    }
+
+    for (int i = 0; i < players.size() * 3; i++) {
+        cout << players[i % players.size()]->getName() << " places 1 city at " << gameMap->startingRegion->getName() << endl;
+        players[i%players.size()]->BuildCity(gameMap->startingRegion);
     }
 }
    
@@ -322,6 +328,7 @@ void GameEngine::buyCard() {
     }
     //will print bought card statement
     notify(-1, index, topBoard->cardCost(index));
+    card->printCard();
     useCard(*card);
 }
 
@@ -330,6 +337,7 @@ void GameEngine::useCard(Card& card) {
     vector<Action> actionsTaken;
 
     cout << "Using Card:" << endl;
+    //finds which combo type the card has
     switch (comboType) {
     case Card::OR: {
         int input = 0;
@@ -338,7 +346,7 @@ void GameEngine::useCard(Card& card) {
             card.printCard();
             cin >> input;
         }
-        actionsTaken.push_back(card.actions[input]);
+        actionsTaken.push_back(card.actions[input-1]);
         break;
     }
     case Card::SINGLE:
@@ -350,6 +358,7 @@ void GameEngine::useCard(Card& card) {
         break;
     }
 
+    //takes care of all the actions on the card
     while (!actionsTaken.empty()) {
         cout << actionsTaken.back().getName() << endl;
         int count = actionsTaken.back().count;
@@ -365,8 +374,9 @@ void GameEngine::useCard(Card& card) {
             code = 0;
             while (count>0) {
                 while (!country) {
-                    cout << "Name the country you wish to add armies in:";
-                    cin >> countryName;
+                    cout << "Name the country you wish to add armies in:" << endl;
+                    cin >> ws;
+                    getline(cin, countryName);
                     country = gameMap->findCountry(countryName);
                 }
                 do {
@@ -375,8 +385,9 @@ void GameEngine::useCard(Card& card) {
                 } while (armiesNum < 0 || cin.fail() || armiesNum > count);
                 success = players[players_turn]->PlaceNewArmies(armiesNum, country, false);
                 if (success) {
-                    count--;
-                    cout << "You have " << count << " left." << endl;
+                    count-= armiesNum;
+                    country = nullptr;
+                    cout << "You have " << count << " actions left." << endl;
                 }
             }
             break;
@@ -384,16 +395,18 @@ void GameEngine::useCard(Card& card) {
         case Action::ACTION_BUILD_CITY: {
             Country* country = nullptr;
             code = 1;
+            players[players_turn]->setDisks(*players[players_turn]->disks + count);
             while (count > 0) {
                 while (!country) {
-                    cout << "Name the country to build your city in: ";
-                    cin >> countryName;
+                    cout << "Name the country to build your city in: " << endl;
+                    cin >> ws;
+                    getline(cin, countryName);
                     country = gameMap->findCountry(countryName);
                 }
                 success = players[players_turn]->BuildCity(country);
                 if (success) {
                     count--;
-                    cout << "You have " << count << " left." << endl;
+                    cout << "You have " << count << " actions left." << endl;
                 }
             }
             break;
@@ -409,14 +422,15 @@ void GameEngine::useCard(Card& card) {
                     playerToDestroy = findPlayer(playerName);
                 }
                 while (!countryToDestroy) {
-                    cout << "Name the country of which you want to destroy its army: ";
-                    cin >> countryName;
+                    cout << "Name the country of which you want to destroy its army: " << endl;
+                    cin >> ws;
+                    getline(cin, countryName);
                     countryToDestroy = gameMap->findCountry(countryName);
                 }
                 success = players[players_turn]->DestroyArmy(countryToDestroy, playerToDestroy);
                 if (success) {
                     count--;
-                    cout << "You have " << count << " left." << endl;
+                    cout << "You have " << count << " actions left." << endl;
                 }
             }
             cout << endl;
@@ -429,13 +443,15 @@ void GameEngine::useCard(Card& card) {
             while (count > 0) {
                 armiesNum = 0;
                 while (!from) {
-                    cout << "Name the country you want to move your armies from: ";
-                    cin >> countryName;
+                    cout << "Name the country you want to move your armies from: " << endl;
+                    cin >> ws;
+                    getline(cin, countryName);
                     from = gameMap->findCountry(countryName);
                 }
                 while (!to) {
-                    cout << "Name the country you want to move your armies to: ";
-                    cin >> countryName;
+                    cout << "Name the country you want to move your armies to: " << endl;
+                    cin >> ws;
+                    getline(cin, countryName);
                     to = gameMap->findCountry(countryName);
                 }
                 do {
@@ -445,7 +461,9 @@ void GameEngine::useCard(Card& card) {
                 success = players[players_turn]->MoveOverLand(armiesNum, to, from);
                 if (success) {
                     count--;
-                    cout << "You have " << count << " left." << endl;
+                    to = nullptr;
+                    from = nullptr;
+                    cout << "You have " << count << " actions left." << endl;
                 }
             }
             break;
@@ -457,13 +475,15 @@ void GameEngine::useCard(Card& card) {
             while (count > 0) {
                 armiesNum = 0;
                 while (!from) {
-                    cout << "Name the country you want to move your armies from: ";
-                    cin >> countryName;
+                    cout << "Name the country you want to move your armies from: " << endl;
+                    cin >> ws;
+                    getline(cin, countryName);
                     from = gameMap->findCountry(countryName);
                 }
                 while (!to) {
-                    cout << "Name the country you want to move your armies to: ";
-                    cin >> countryName;
+                    cout << "Name the country you want to move your armies to: " << endl;
+                    cin >> ws;
+                    getline(cin, countryName);
                     to = gameMap->findCountry(countryName);
                 }
                 do {
@@ -474,14 +494,17 @@ void GameEngine::useCard(Card& card) {
                 success = players[players_turn]->MoveOverWater(armiesNum, to, from) || players[players_turn]->MoveOverLand(armiesNum, to, from);
                 if (success) {
                     count--;
-                    cout << "You have " << count << " left." << endl;
+                    to = nullptr;
+                    from = nullptr;
+                    cout << "You have " << count << " actions left." << endl;
                 }
             }
             break;
         }
         }
+        // notifies the action observer for which action was done
+        notify(code, 0, actionsTaken.back().count);
         actionsTaken.pop_back();
-        notify(code, 0, 0);
     }
 }
 
