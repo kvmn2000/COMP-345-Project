@@ -24,7 +24,7 @@ BidingFacility::BidingFacility(const BidingFacility& b) {
 }
 
 BidingFacility::~BidingFacility() {
-	
+
 }
 
 //Assignment operator for BidingFacility

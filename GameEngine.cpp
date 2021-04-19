@@ -1,4 +1,4 @@
-#pragma once
+
 #include "GameEngine.h"
 
 #include <algorithm>
@@ -58,7 +58,7 @@ GameEngine::~GameEngine()
     cout << "---------- DELETING BIDING LIST -----------" << endl;
     // Need to fix
     cout << "---------- DELETING PLAYERS -----------" << endl;
-   
+
 
 }
 
@@ -71,7 +71,7 @@ void GameEngine::gameStart(const string mapDirectory)
 };
 
 void GameEngine::startUp() {
-    
+
     gameDeck->shuffle();
     topBoard = topBoardGenetor();
     displayTopBoard(*topBoard);
@@ -79,11 +79,10 @@ void GameEngine::startUp() {
     resourceDistribution();
     placingArmy();
     bidingListDisplay();
-    gameLoop();
 }
 
-void GameEngine::gameLoop() {
-    while (turn < 20) {
+void GameEngine::gameLoop(int t) {
+    while (turn < t) {
         cout << "\n\n\n" << players[players_turn]->getName() << "'s Turn:" << endl;
         buyCard();
         endTurn();
@@ -91,10 +90,15 @@ void GameEngine::gameLoop() {
 }
 
 void GameEngine::createGameMap(const string directory) {
-   
-    gameMap = maploader.selectMap(directory);
-    cout << endl << "AMOUNT OF COUNTRIES:" << gameMap->countryCount() << endl;
 
+    gameMap = maploader.selectMap(directory);
+
+    cout << endl << " ------------LIST OF COUNTRIES-----------"  << endl;
+
+    for (int i = 0; i < gameMap->getCountries().size(); i++) {
+        cout << gameMap->getCountries()[i]->getName() << endl;
+
+    }
 }
 
 // Gets input from the user for the amount of players that should be created
@@ -107,17 +111,37 @@ void GameEngine::createPlayers() {
 
     for (int i = 0; i < numPlayers; i++) {
         string playerName;
+        int type = 0;
+
         cout << "Created Player with ID: " << (i + 1) << "." << endl;
         cout << "Pick a name for player " << (i + 1) << ": ";
         cin >> playerName;
         Player* thePlayer = new Player(gameMap, playerName, 0, 0, 0);
-        players.push_back(thePlayer);
 
+        cout << "\nChoose mode for Player" << (i + 1) << ": (0 for human players, 1 for greedy computer player or 2 for moderate computer player): "<<endl;
+        int numPlayers = getUserInputInteger("Your choice (-1 to quit): ", 0, 2);
+
+       
+        if (type == 1) {
+            thePlayer->setStrategy(new GreedyComputerStrategy);
+        }
+        if (type== 2) {
+            thePlayer->setStrategy(new ModerateComputerStrategy);
+        }
+        else {
+            thePlayer->setStrategy(new HumanStrategy);
+        }
+        players.push_back(thePlayer);
         cout << "Added player to a biding list" << endl;
         BidingFacility* biding = new BidingFacility(thePlayer->getName());
         bidinglist->addPlayer(biding);
         cout << endl;
+
     }
+
+   
+     
+
 }
 
 void GameEngine::createDeck() {
@@ -149,17 +173,17 @@ Hand* GameEngine::topBoardGenetor() {
 
 //This diplays the availible cards at the top of the board.
 void GameEngine::displayTopBoard(Hand& topBoard) {
-    
+
     cout << endl << "---------- DISPLAYING TOP BOARD -----------" << endl;
     topBoard.printHand();
 }
 
-void GameEngine::coinDistribution(){
-   
+void GameEngine::coinDistribution() {
+
     cout << endl << "----------- DISTRIBUTING COINS TO PLAYERS ------------" << endl;
 
     switch (players.size()) {
-    
+
     case 2:
         for (int i = 0; i < players.size(); i++) {
             cout << players[i]->getName() << " will receive 14 coins" << endl;
@@ -181,7 +205,7 @@ void GameEngine::coinDistribution(){
             coinPool = coinPool - 9;
         }
         break;
-    default:{}
+    default: {}
 
     }
 }
@@ -192,8 +216,8 @@ void GameEngine::bidingListDisplay() {
 
     cout << "Bidder wins by highest bidding" << endl;
     BidingFacility highestbidder = bidinglist->bid();
- 
- 
+
+
 }
 
 void GameEngine::resourceDistribution() {
@@ -214,22 +238,26 @@ void GameEngine::resourceDistribution() {
 }
 
 void GameEngine::placingArmy() {
-    
+
 
     cout << endl << "----------- PLACING PLAYERS ARMY ------------" << endl;
 
-    for (int i = 0; i < players.size() *10; i++) {
-        
-        cout << players[(i % players.size())]->getName() << " places 1 army at "<< gameMap->startingRegion->getName() << endl;
-        players[(i % players.size())]->PlaceNewArmies(1, gameMap->startingRegion, true);
+    //place armies at starting point
+    cout << "Place 4 armies on the starting region of the board! (" << gameMap->startingRegion->getName() << ")" << endl;
+    for (auto player : players) {
+        cout <<"Player " << player->getName() <<" ";
+        player->PlaceNewArmies(4, gameMap->startingRegion, true);
     }
 
-    for (int i = 0; i < players.size() * 3; i++) {
-        cout << players[i % players.size()]->getName() << " places 1 city at " << gameMap->startingRegion->getName() << endl;
-        players[i%players.size()]->BuildCity(gameMap->startingRegion);
+    //place cities at starting point
+    cout << "\nPlace 1 city on the starting region of the board! (" << gameMap->startingRegion->getName() << ")" << endl;
+    for (auto player : players) {
+        cout << "Player " << player->getName() << " ";
+        player->BuildCity(gameMap->startingRegion);
     }
+
 }
-   
+
 // Helper function for getting user integer input
 int GameEngine::getUserInputInteger(string output, int min, int max) {
     string inputString;
@@ -307,6 +335,7 @@ string GameEngine::getUserInputString(string output, string choice1, string choi
 }
 
 void GameEngine::endTurn() {
+  
     if (players_turn == players.size()) {
         players_turn = 0;
     }
@@ -324,7 +353,7 @@ void GameEngine::buyCard() {
         cout << "Write a number from 0 to 5 to choose the card you want. " << endl;
         index = getUserInputInteger("Choose -1 to quit the game. ", 0, 5);
         card = topBoard->exchange(index, players[players_turn]);
-        
+
     }
     //will print bought card statement
     notify(-1, index, topBoard->cardCost(index));
@@ -346,7 +375,7 @@ void GameEngine::useCard(Card& card) {
             card.printCard();
             cin >> input;
         }
-        actionsTaken.push_back(card.actions[input-1]);
+        actionsTaken.push_back(card.actions[input - 1]);
         break;
     }
     case Card::SINGLE:
@@ -372,7 +401,7 @@ void GameEngine::useCard(Card& card) {
         case Action::ACTION_ADD_ARMY: {
             Country* country = nullptr;
             code = 0;
-            while (count>0) {
+            while (count > 0) {
                 while (!country) {
                     cout << "Name the country you wish to add armies in:" << endl;
                     cin >> ws;
@@ -385,7 +414,7 @@ void GameEngine::useCard(Card& card) {
                 } while (armiesNum < 0 || cin.fail() || armiesNum > count);
                 success = players[players_turn]->PlaceNewArmies(armiesNum, country, false);
                 if (success) {
-                    count-= armiesNum;
+                    count -= armiesNum;
                     country = nullptr;
                     cout << "You have " << count << " actions left." << endl;
                 }
@@ -515,4 +544,3 @@ Player* GameEngine::findPlayer(string player_name) {
         }
     }
 }
-
