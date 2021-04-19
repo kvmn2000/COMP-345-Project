@@ -102,6 +102,7 @@ public:
 	vector<Country*> getCountriesByContinent(string continentName);
 	bool validate();
 	Country* startingRegion;
+	Country* findCountry(string country_name);
 
 private:
 	map<string, Country*> countries;
