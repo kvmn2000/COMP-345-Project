@@ -223,7 +223,7 @@ pair<Country, int>* Player::getArmiesInCountry(Country* country) {
 pair<Country, int>* Player::getCitiesInCountry(Country* country) {
     vector<countryValue>::iterator i;
     for (i = (citiesIn)->begin(); i != (citiesIn)->end(); ++i) {
-        if (i->first == *country) {
+        if ((i->first == *country) == 0) {
             return &(*i);
         }
     }

@@ -506,7 +506,7 @@ bool Map::toGetTo(string initial, string destination)
 
 Country* Map::findCountry(string country_name) {
 	for (auto& i : countries) {
-		if (country_name == i.second->getName()) {
+		if (country_name == i.first) {
 			return i.second;
 		}
 	}
