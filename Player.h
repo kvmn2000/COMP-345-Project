@@ -14,7 +14,6 @@ class Player {
 public:
     typedef pair<Country, int> countryValue;
     Map* map;
-    Country* startingRegion;
     PlayerStrategy* strategy;
     string* name;
     int* disks;

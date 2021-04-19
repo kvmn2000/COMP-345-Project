@@ -67,7 +67,7 @@ Country& Country::operator=(const Country& copy)
 }
 
 bool Country::operator==(const Country& copy) {
-	return name == copy.name && continentName == copy.name && owner == copy.owner && armie == copy.armie && neighbors == copy.neighbors;
+	return name == copy.name && continentName == copy.name && owner == copy.owner && armie == copy.armie;
 }
 
 ostream& operator<<(ostream& out, const Country& copy)
@@ -502,6 +502,14 @@ bool Map::toGetTo(string initial, string destination)
 
 	return false;
 
+}
+
+Country* Map::findCountry(string country_name) {
+	for (auto& i : countries) {
+		if (country_name == i.second->getName()) {
+			return i.second;
+		}
+	}
 }
 
 

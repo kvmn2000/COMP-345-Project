@@ -45,6 +45,7 @@ public:
     void gameLoop();
     void startUp();
 
+    Player* findPlayer(string playerName);
 
 
 private:
@@ -53,7 +54,7 @@ private:
     Deck* gameDeck;
     BidingList* bidinglist;
     vector<Player*> players; //vector of all players that has been created
-    int players_turn = 1;
+    int players_turn = 0;
     int turn = 0;
     Hand* topBoard;
     MapLoader maploader;

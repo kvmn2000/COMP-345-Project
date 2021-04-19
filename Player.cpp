@@ -214,7 +214,7 @@ void Player::display() {
 pair<Country, int>* Player::getArmiesInCountry(Country* country) {
     vector<countryValue>::iterator i;
     for (i = (armiesIn)->begin(); i != (armiesIn)->end(); ++i) {
-        if (i->first == *country) {
+        if ((i->first == *country) == 0) {
             return &(*i);
         }
     }

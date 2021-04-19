@@ -5,7 +5,7 @@
 #include<random>
 #include <limits>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 
 
 GameEngine::GameEngine()
@@ -219,8 +219,8 @@ void GameEngine::placingArmy() {
 
     for (int i = 0; i < players.size() *10; i++) {
         
-        cout << players[(i % players.size())]->getName() << " places 1 army" << endl;
- 
+        cout << players[(i % players.size())]->getName() << " places 1 army at "<< gameMap->startingRegion->getName() << endl;
+        players[(i % players.size())]->PlaceNewArmies(1, gameMap->startingRegion, true);
     }
 }
    
@@ -302,7 +302,7 @@ string GameEngine::getUserInputString(string output, string choice1, string choi
 
 void GameEngine::endTurn() {
     if (players_turn == players.size()) {
-        players_turn = 1;
+        players_turn = 0;
     }
     else {
         players_turn++;
@@ -331,13 +331,16 @@ void GameEngine::useCard(Card& card) {
 
     cout << "Using Card:" << endl;
     switch (comboType) {
-    case Card::OR:
-        cout << "Write a numbers 1 or 2 to choose between the 2 actions: " << endl;
-        int input;
-        card.printCard();
-        cin >> input;
+    case Card::OR: {
+        int input = 0;
+        while (input < 1 || input > 2) {
+            cout << "Write a numbers 1 or 2 to choose between the 2 actions: " << endl;
+            card.printCard();
+            cin >> input;
+        }
         actionsTaken.push_back(card.actions[input]);
         break;
+    }
     case Card::SINGLE:
         actionsTaken.push_back(card.actions[0]);
         break;
@@ -348,31 +351,145 @@ void GameEngine::useCard(Card& card) {
     }
 
     while (!actionsTaken.empty()) {
+        cout << actionsTaken.back().getName() << endl;
+        int count = actionsTaken.back().count;
         int code = 0;
+        int armiesNum = 0;
+        string countryName;
+        string playerName;
+        bool success;
+
         switch (actionsTaken.back().type) {
-        case Action::ACTION_ADD_ARMY:
-            //add army
+        case Action::ACTION_ADD_ARMY: {
+            Country* country = nullptr;
             code = 0;
+            while (count>0) {
+                while (!country) {
+                    cout << "Name the country you wish to add armies in:";
+                    cin >> countryName;
+                    country = gameMap->findCountry(countryName);
+                }
+                do {
+                    cout << "\n How many armies to add? " << endl;
+                    cin >> armiesNum;
+                } while (armiesNum < 0 || cin.fail() || armiesNum > count);
+                success = players[players_turn]->PlaceNewArmies(armiesNum, country, false);
+                if (success) {
+                    count--;
+                    cout << "You have " << count << " left." << endl;
+                }
+            }
             break;
-        case Action::ACTION_BUILD_CITY:
-            //players[players_turn]->BuildCity();
+        }
+        case Action::ACTION_BUILD_CITY: {
+            Country* country = nullptr;
             code = 1;
+            while (count > 0) {
+                while (!country) {
+                    cout << "Name the country to build your city in: ";
+                    cin >> countryName;
+                    country = gameMap->findCountry(countryName);
+                }
+                success = players[players_turn]->BuildCity(country);
+                if (success) {
+                    count--;
+                    cout << "You have " << count << " left." << endl;
+                }
+            }
             break;
-        case Action::ACTION_DESTROY_ARMY:
+        }
+        case Action::ACTION_DESTROY_ARMY: {
+            Player* playerToDestroy = nullptr;
+            Country* countryToDestroy = nullptr;
             code = 2;
-            //players[players_turn]->DestroyArmy();
+            while (count > 0) {
+                while (!playerToDestroy) {
+                    cout << "Name the player of which you want to destroy their army: ";
+                    cin >> playerName;
+                    playerToDestroy = findPlayer(playerName);
+                }
+                while (!countryToDestroy) {
+                    cout << "Name the country of which you want to destroy its army: ";
+                    cin >> countryName;
+                    countryToDestroy = gameMap->findCountry(countryName);
+                }
+                success = players[players_turn]->DestroyArmy(countryToDestroy, playerToDestroy);
+                if (success) {
+                    count--;
+                    cout << "You have " << count << " left." << endl;
+                }
+            }
+            cout << endl;
             break;
-        case Action::ACTION_MOVE_OVER_LAND:
+        }
+        case Action::ACTION_MOVE_OVER_LAND: {
+            Country* to = nullptr;
+            Country* from = nullptr;
             code = 3;
-            //players[players_turn]->MoveOverLand();
+            while (count > 0) {
+                armiesNum = 0;
+                while (!from) {
+                    cout << "Name the country you want to move your armies from: ";
+                    cin >> countryName;
+                    from = gameMap->findCountry(countryName);
+                }
+                while (!to) {
+                    cout << "Name the country you want to move your armies to: ";
+                    cin >> countryName;
+                    to = gameMap->findCountry(countryName);
+                }
+                do {
+                    cout << "How many armies to move? ";
+                    cin >> armiesNum;
+                } while (armiesNum < 0 || armiesNum > players[players_turn]->getArmiesInCountry(from)->second);
+                success = players[players_turn]->MoveOverLand(armiesNum, to, from);
+                if (success) {
+                    count--;
+                    cout << "You have " << count << " left." << endl;
+                }
+            }
             break;
-        case Action::ACTION_MOVE_OVER_LAND_OR_WATER:
+        }
+        case Action::ACTION_MOVE_OVER_LAND_OR_WATER: {
+            Country* to = nullptr;
+            Country* from = nullptr;
             code = 4;
-            //players[players_turn]->MoveOverLand();
+            while (count > 0) {
+                armiesNum = 0;
+                while (!from) {
+                    cout << "Name the country you want to move your armies from: ";
+                    cin >> countryName;
+                    from = gameMap->findCountry(countryName);
+                }
+                while (!to) {
+                    cout << "Name the country you want to move your armies to: ";
+                    cin >> countryName;
+                    to = gameMap->findCountry(countryName);
+                }
+                do {
+                    cout << "\n How many armies to move? " << endl;
+                    cin >> armiesNum;
+                } while (armiesNum < 0 || cin.fail() || armiesNum > players[players_turn]->getArmiesInCountry(from)->second);
+
+                success = players[players_turn]->MoveOverWater(armiesNum, to, from) || players[players_turn]->MoveOverLand(armiesNum, to, from);
+                if (success) {
+                    count--;
+                    cout << "You have " << count << " left." << endl;
+                }
+            }
             break;
+        }
         }
         actionsTaken.pop_back();
         notify(code, 0, 0);
+    }
+}
+
+Player* GameEngine::findPlayer(string player_name) {
+    for (auto& i : players) {
+        if (player_name == i->getName()) {
+            return i;
+        }
     }
 }
 
