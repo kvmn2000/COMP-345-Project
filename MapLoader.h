@@ -17,7 +17,7 @@ public:
 	MapLoader();
 	~MapLoader();
 	MapLoader(const MapLoader& copy);
-	
+
 	Map* selectMap(const string mapDirectory);
 	string getFileName();
 

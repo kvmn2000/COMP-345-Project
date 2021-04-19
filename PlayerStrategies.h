@@ -31,5 +31,3 @@ public:
     virtual bool interaction();
     int submitAge();
 };
-
-

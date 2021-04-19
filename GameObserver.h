@@ -28,7 +28,7 @@ public:
     virtual void notify(int code, int type, int num);
 
 private:
-    
+
     list<GameObservers*>* observers;
 
 };

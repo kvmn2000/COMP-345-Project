@@ -8,7 +8,7 @@ using namespace std;
 class Player;
 
 struct Action {
-    static const char * const actions[];
+    static const char* const actions[];
 
     enum ActionType {
         ACTION_ADD_ARMY,
@@ -27,7 +27,7 @@ struct Action {
 };
 
 struct Good {
-    static const char * const goods[];
+    static const char* const goods[];
 
     enum GoodType {
         GOOD_RUBY,
@@ -67,7 +67,7 @@ public:
 
 class Deck {
 public:
-    Card *topCard;
+    Card* topCard;
     array<Card, 42> cards;
     void generateDeck();
     Deck();
@@ -78,9 +78,9 @@ public:
 
 class Hand {
 public:
-    Deck *deck;
-    array<Card *, 6> cards;
-    explicit Hand(Deck *deck);
+    Deck* deck;
+    array<Card*, 6> cards;
+    explicit Hand(Deck* deck);
     Card* exchange(int cardIndex, Player* player);
     int cardCost(int cardIndex);
     void printHand();

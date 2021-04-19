@@ -1,4 +1,3 @@
-
 #include "Map.h"
 #include "GameEngine.h"
 #include "MapLoader.h"
@@ -14,7 +13,7 @@ int main(int argc, const char* argv[]) {
 	GameEngine* game = new GameEngine(mapDirectory);
 	ActionObserver* actionObserver = new ActionObserver(game);
 	game->startUp();
-
+	game->gameLoop(10);
 	game->~GameEngine();
 	delete actionObserver;
 	return 0;

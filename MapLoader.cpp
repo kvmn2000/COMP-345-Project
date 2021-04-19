@@ -2,9 +2,9 @@
 
 
 //default constructor
-MapLoader::MapLoader() 
+MapLoader::MapLoader()
 {
-	
+
 }
 
 //destructor
@@ -26,10 +26,10 @@ MapLoader& MapLoader::operator=(const MapLoader& copy) {
 
 //stream insertion operator
 ostream& operator<<(ostream& os, const MapLoader& copy) {
-	
+
 	os << "path: " << copy.fileName << endl;
 	return os;
-	
+
 }
 
 //stream extraction operator
@@ -39,13 +39,13 @@ istream& operator>>(istream& is, MapLoader& copy) {
 	return is;
 }
 
-string MapLoader::getFileName(){
+string MapLoader::getFileName() {
 	return fileName;
 }
 
 Map* MapLoader::loadMap(string path) {
 
-	Map* map = new Map();	
+	Map* map = new Map();
 
 	ifstream file_reader(path);
 	string current_continent = "";
@@ -125,9 +125,9 @@ Map* MapLoader::selectMap(const string mapDirectory) {
 
 	bool badMap = true;
 	Map* theMap;
-	
+
 	do
-	{	
+	{
 		theMap = new Map();
 
 		cout << endl << "---CHOOSING MAP---" << endl << endl;
@@ -135,35 +135,34 @@ Map* MapLoader::selectMap(const string mapDirectory) {
 
 		int mapNumber = getUserInputInteger("\nYour choice (-1 to quit): ", 1, mapFiles.size());
 
-		string fileSelected =  mapDirectory + mapFiles[mapNumber - 1];
-		cout<<"file name :"<< fileSelected<<endl;
+		string fileSelected = mapDirectory + mapFiles[mapNumber - 1];
+		cout << "file name :" << fileSelected << endl;
 		fileName = fileSelected;
-		
+
 		cout << endl << "The map you chose is: " << fileSelected << endl;
 
-		
-			if (fileSelected.substr(fileSelected.length() - 4, fileSelected.length() - 1) != ".txt")
-			{
-				cout << endl << "File is not of type .txt" << endl;
-				fileSelected.clear();
+
+		if (fileSelected.substr(fileSelected.length() - 4, fileSelected.length() - 1) != ".txt")
+		{
+			cout << endl << "File is not of type .txt" << endl;
+			fileSelected.clear();
+		}
+		else
+		{
+			theMap = loadMap(fileSelected);
+
+			if (theMap->validate()) {
+				cout << "New Game has been started! \n";
+				cout << "This gamemap is valid! \n";
+				badMap = false;
 			}
 			else
-			{					
-				theMap = loadMap(fileSelected);
-				
-				if (theMap->validate()) {
-					cout << "New Game has been started! \n";
-					cout << "This gamemap is valid! \n";
-					badMap = false;
-				}
-				else
-				{
-					cout << "Game map is invalid. It has been deleted. Try again with a valid map file\n";
-				}
+			{
+				cout << "Game map is invalid. It has been deleted. Try again with a valid map file\n";
 			}
-	}
-	while(badMap);
-	cout<<"end of select map........."<<endl;
+		}
+	} while (badMap);
+	cout << "end of select map........." << endl;
 	return theMap;
 }
 

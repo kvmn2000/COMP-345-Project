@@ -42,7 +42,7 @@ public:
     void useCard(Card& card);
     void endTurn();
 
-    void gameLoop();
+    void gameLoop(int t);
     void startUp();
 
     Player* findPlayer(string playerName);
@@ -72,5 +72,5 @@ private:
 
     int getUserInputInteger(string, int, int);
     string getUserInputString(string, string, string);
-  
+
 };

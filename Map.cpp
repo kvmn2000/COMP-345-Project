@@ -163,7 +163,7 @@ int Country::isAdjacent(Country* from) {
 	vector<string> neighbours = getNeighborsName();
 	for (string str : neighbours) {
 		if (str == from->getName()) {
-			return (getContinentName()==from->getContinentName()) ? 0 : 1;
+			return (getContinentName() == from->getContinentName()) ? 0 : 1;
 		}
 	}
 	return -1;
@@ -511,5 +511,3 @@ Country* Map::findCountry(string country_name) {
 		}
 	}
 }
-
-
